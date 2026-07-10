@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'app01',
 ]
 
 MIDDLEWARE = [
@@ -74,8 +75,12 @@ WSGI_APPLICATION = 'django_admin.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',  # 加载mysql引擎
+        'NAME': 'hndj',  # 数据库名称
+        'USER': 'root',  # mysql账户名
+        'PASSWORD': '123456',  # mysql账户密码
+        'PORT': 3306,  # 端口号
+        'HOST': 'localhost'
     }
 }
 
