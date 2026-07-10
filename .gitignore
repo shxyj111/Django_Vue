@@ -1,0 +1,51 @@
+# ===== 编辑器 / 工具 =====
+.vscode/
+.vfox
+.vfox.toml
+.idea/
+
+# ===== Python / Django =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# 虚拟环境
+.venv/
+venv/
+env/
+ENV/
+
+# 数据库
+*.sqlite3
+db.sqlite3
+
+# 环境变量 / 密钥
+.env
+.env.*
+!.env.example
+
+# Django 静态文件 / 媒体（由 collectstatic 生成，按需保留）
+/static/
+/media/
+
+# 日志
+*.log
+django_admin/logs/
+
+# ===== Node / Vue =====
+node_modules/
+dist/
+dist-ssr/
+*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.npm
+
+# ===== 系统 / 杂项 =====
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
