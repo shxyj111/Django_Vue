@@ -1,0 +1,9 @@
+{% extends "portal/base.html" %}
+{% block title %}{{ name }}{% endblock %}
+{% block content %}
+  <div class="card">
+    <h2>{{ name }}</h2>
+    <p>{{ desc }}</p>
+    <p style="color:#999;">（本页面依据产品原型「{{ name }}」占位，后续可在此嵌入具体图表与功能模块。）</p>
+  </div>
+{% endblock %}

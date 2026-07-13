@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}廊坊顶津智能管理系统{% endblock %}</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Microsoft YaHei", Arial, sans-serif; background: #f0f2f5; color: #2c3e50; }
+    .layout { display: flex; min-height: 100vh; }
+    .sidebar { width: 220px; background: #001529; color: #fff; padding: 16px 0; }
+    .sidebar .title { font-size: 16px; font-weight: bold; padding: 0 20px 16px; border-bottom: 1px solid #333; line-height: 1.4; }
+    .sidebar a { display: block; color: #ccc; text-decoration: none; padding: 12px 20px; }
+    .sidebar a:hover, .sidebar a.active { background: #1890ff; color: #fff; }
+    .content { flex: 1; padding: 24px; }
+    .card { background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+    .modules { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; }
+    .module-card { width: 220px; background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,.08); text-decoration: none; color: inherit; transition: box-shadow .2s; }
+    .module-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+    .module-card h3 { margin: 0 0 8px; color: #1890ff; }
+    .module-card p { margin: 0; color: #888; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <div class="sidebar">
+      <div class="title">廊坊顶津<br>智能管理系统</div>
+      <a href="/" class="{% if active == 'portal' %}active{% endif %}">系统总览</a>
+      <a href="/tpm/" class="{% if active == 'tpm' %}active{% endif %}">TPM管理系统</a>
+      <a href="/facility/" class="{% if active == 'facility' %}active{% endif %}">厂务管理数位化</a>
+      <a href="/quality/" class="{% if active == 'quality' %}active{% endif %}">品质分析系统</a>
+      <a href="/spare/" class="{% if active == 'spare' %}active{% endif %}">备品备件系统</a>
+      <a href="/motor/" class="{% if active == 'motor' %}active{% endif %}">电机监控系统</a>
+      <a href="/energy/" class="{% if active == 'energy' %}active{% endif %}">能源管理系统</a>
+    </div>
+    <div class="content">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</body>
+</html>

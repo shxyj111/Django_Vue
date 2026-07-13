@@ -39,6 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app01',
+    # 产品原型对应的七大业务应用（1 主 + 6 子）
+    'portal',
+    'tpm',
+    'facility',
+    'quality',
+    'spare',
+    'motor',
+    'energy',
 ]
 
 MIDDLEWARE = [

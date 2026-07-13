@@ -1,0 +1,16 @@
+{% extends "portal/base.html" %}
+{% block title %}系统总览 - 廊坊顶津智能管理系统{% endblock %}
+{% block content %}
+  <div class="card">
+    <h2>系统总览</h2>
+    <p>欢迎使用廊坊顶津智能管理系统，以下是六大业务子系统入口：</p>
+    <div class="modules">
+      {% for m in modules %}
+      <a class="module-card" href="{{ m.url }}">
+        <h3>{{ m.name }}</h3>
+        <p>{{ m.desc }}</p>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
