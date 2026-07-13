@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>廊坊顶津智能品质分析系统</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Microsoft YaHei','PingFang SC',sans-serif;background:#061220;min-height:100vh;color:#e0e8f0}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(206,77,140,.04) 0%,transparent 60%);pointer-events:none}
+
+.header{height:56px;background:linear-gradient(90deg,#0a1a30,#0f2240,#0a1a30);display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid rgba(206,77,140,.16)}
+.header-left{display:flex;align-items:center;gap:18px}.logo{font-size:17px;font-weight:bold;color:#ff8ab3;letter-spacing:1px;text-shadow:0 0 12px rgba(255,138,179,.2)}
+.nav-links{display:flex;gap:14px;font-size:12px;color:#546e7a}.nav-links a{color:#90a4ae;text-decoration:none;padding:2px 5px;border-radius:3px;transition:.15s}.nav-links a:hover{color:#ff80ab;background:rgba(206,77,140,.08)}
+.header-center h1{font-size:20px;font-weight:600;letter-spacing:3px;color:#fff}
+.header-right{display:flex;align-items:center;gap:12px;font-size:13px;color:#90a4ae}
+.btn-logout{background:rgba(206,77,140,.22);border:1px solid rgba(206,77,140,.35);color:#f48fb1;padding:5px 16px;border-radius:4px;cursor:pointer;font-size:12px;transition:.2s}
+.top-tools{display:flex;gap:8px;font-size:17px;color:#78909c}
+.home-btn{display:inline-flex;align-items:center;gap:4px;background:rgba(0,188,212,.18);border:1px solid rgba(0,188,212,.35);color:#80deea;padding:5px 14px;border-radius:4px;cursor:pointer;font-size:12px;text-decoration:none;transition:.2s}
+.home-btn:hover{background:rgba(0,188,212,.3)}
+
+.sidebar{position:fixed;left:0;top:56px;width:50px;bottom:0;background:linear-gradient(180deg,#081626,#0c1e32);border-right:1px solid rgba(80,160,220,.08);display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:4px;z-index:99}
+.sidebar-icon{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;color:#546e7a;font-size:19px;transition:.2s}
+.sidebar-icon:hover,.sidebar-icon.active{background:rgba(206,77,140,.14);color:#ff80ab}
+.sidebar-bottom{margin-top:auto}.menu-btn{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#ec407a,#c2185b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;cursor:pointer;box-shadow:0 3px 14px rgba(236,64,122,.35);transition:.25s}
+.menu-btn:hover{transform:scale(1.08)}
+
+.main-content{margin-left:50px;padding:16px 20px;position:relative;z-index:1}
+.page-title-row{text-align:center;margin-bottom:14px}.page-title{font-size:25px;font-weight:700;letter-spacing:5px;color:#fff;text-shadow:0 0 24px rgba(206,77,140,.2)}
+
+.dashboard-grid{display:grid;grid-template-columns:1fr 1.5fr 1fr;grid-template-rows:auto auto auto;gap:14px;max-width:1700px;margin:0 auto}
+
+.panel{background:linear-gradient(145deg,rgba(10,26,48,.88),rgba(14,36,62,.82));border:1px solid rgba(206,77,140,.12);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.12)}
+.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(206,77,140,.5),transparent)}
+.panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.panel-title{font-size:14px;font-weight:600;color:#ff80ab;letter-spacing:1px;text-shadow:0 0 8px rgba(255,128,171,.12)}
+.arrow-btn{cursor:pointer;color:#ff80ab;font-size:16px;transition:.2s}
+.legend-row{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;margin-bottom:6px}
+.legend-item{display:flex;align-items:center;gap:4px;color:#b0bec5}.legend-dot{width:9px;height:9px;border-radius:2px}
+
+/* Bars / pareto */
+.chart-area{width:100%;height:175px;position:relative}
+.bar-chart-mini{height:155px;position:relative}.bar-group{display:flex;align-items:flex-end;gap:6px;height:115px;padding:0 4px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;min-width:0}
+.bar-rect{width:100%;border-radius:2px 2px 0 0;transition:.3s;cursor:pointer;box-shadow:0 0 4px rgba(0,0,0,.08)}.bar-rect:hover{filter:brightness(1.3)}
+.bar-val{font-size:9px;color:#90a4ae}.bar-xlabel{font-size:9px;color:#607d8b;text-align:center;margin-top:2px;white-space:nowrap}
+
+/* Big numbers */
+.big-num-panel{text-align:center;display:flex;align-items:center;justify-content:center;gap:70px;padding:24px}
+.big-num-item{text-align:center}.big-num-value{font-size:52px;font-weight:700;color:#ff8ab3;text-shadow:0 0 28px rgba(255,138,179,.35),0 2px 8px rgba(0,0,0,.3);line-height:1}.big-num-label{font-size:12px;color:#90a4ae;margin-top:6px}
+
+/* Progress bars */
+.progress-list{display:flex;flex-direction:column;gap:10px}
+.progress-item{display:flex;align-items:center;gap:8px;font-size:12px}
+.progress-label{width:44px;color:#b0bec5;flex-shrink:0;font-weight:500}
+.progress-bar-bg{flex:1;height:18px;background:rgba(20,50,75,.5);border-radius:9px;overflow:hidden;position:relative;box-shadow:inset 0 1px 3px rgba(0,0,0,.2)}
+.progress-bar-fill{height:100%;border-radius:9px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:10px;color:#fff;font-weight:700;transition:width .6s ease;box-shadow:0 0 8px rgba(0,0,0,.15)}
+.progress-val{width:60px;text-align:right;color:#e0f7fa;font-size:12px;font-family:Consolas,monospace}
+
+/* Pie chart */
+.pie-container{display:flex;align-items:center;justify-content:center;gap:20px;height:160px}
+.pie-chart{width:110px;height:110px;border-radius:50%;position:relative;
+  background:conic-gradient(#ec407a 0% 38%, #ab47bc 38% 60%, #42a5f5 60% 78%, #26c6da 78% 90%, rgba(30,55,80,.4) 90% 100%);
+  display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(236,64,122,.18)}
+.pie-inner{width:68px;height:68px;border-radius:50%;background:#0a1830;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.pie-inner-text{font-size:18px;font-weight:700;color:#ec407a;line-height:1}.pie-inner-sub{font-size:9px;color:#607d8b}
+.pie-legend{font-size:11px;color:#b0bec5;line-height:1.9}
+.pie-header-right{text-align:right;font-size:11px;color:#607d8b}
+
+/* Map */
+.map-area{width:100%;height:420px;position:relative;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,rgba(206,77,140,.03) 0%,transparent 70%);border-radius:8px}
+.china-map-svg{width:92%;max-width:620px;opacity:.88}
+.map-province{fill:rgba(33,110,160,.22);stroke:rgba(79,195,247,.32);stroke-width:.75;transition:.2s;cursor:pointer}.map-province:hover{fill:rgba(33,110,160,.42)}.map-province.active{fill:rgba(255,138,179,.3);stroke:rgba(255,138,179,.55)}
+.map-label{font-size:8px;fill:#b0bec5;pointer-events:none}.map-highlight-dot{fill:#ff8ab3;filter:drop-shadow(0 0 4px rgba(255,138,179,.6))}
+.map-box-south{position:absolute;bottom:20px;right:30px;width:70px;height:80px;border:1px dashed rgba(79,195,247,.3);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#4fc3f7;background:rgba(79,195,247,.03)}
+
+/* KPI cards */
+.kpi-row{display:flex;gap:10px;margin-bottom:2px}
+.kpi-card{flex:1;background:rgba(10,30,55,.6);border:1px solid rgba(206,77,140,.18);border-radius:8px;padding:10px;text-align:center}
+.kpi-val{font-size:22px;font-weight:700;color:#ff8ab3}
+.kpi-label{font-size:10px;color:#90a4ae;margin-top:3px}
+
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:rgba(206,77,140,.16);border-radius:3px}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left"><span class="logo">康师傅饮品事业</span>
+    <nav class="nav-links"><a href="廊坊顶津智能管理系统.html">首页</a><a href="TPM管理系统.html">TPM管理系统</a><a href="密封监控系统.html">智能密封系统</a><a href="备品备件系统.html">备品备件系统</a><a href="厂务管理数位化.html">厂数智化系统</a><a href="能源管理系统.html">能源管理系统</a><a href="品质分析系统.html" style="color:#ff80ab;background:rgba(206,77,140,.12)">品质分析系统</a><a href="电机监控系统.html">电机监控系统</a></nav>
+  </div>
+  <div class="header-center"><h1>欢迎进入 廊坊顶津智能品质分析系统</h1></div>
+  <div class="header-right"><a href="廊坊顶津智能管理系统.html" class="home-btn" title="返回总览">&#8962; 首页</a><span>&#128100; 管理员--刘伟恒</span><button class="btn-logout">退出</button><div class="top-tools">&#128197; &#127769; &#9881; &#9786;</div></div>
+</header>
+
+<aside class="sidebar">
+  <div class="sidebar-icon active">&#9776;</div><div class="sidebar-icon">&#127968;</div><div class="sidebar-icon">&#9881;</div><div class="sidebar-icon">&#128295;</div><div class="sidebar-icon">&#128202;</div><div class="sidebar-icon">&#128203;</div><div class="sidebar-icon">&#128424;</div><div class="sidebar-icon">&#128193;</div>
+  <div class="sidebar-bottom"><div class="menu-btn">&#128722;</div></div>
+</aside>
+
+<main class="main-content">
+<div class="page-title-row"><h2 class="page-title">欢迎进入 廊坊顶津智能品质分析系统</h2></div>
+
+<div class="dashboard-grid">
+
+<!-- Row 1 Left: 不良品柏拉图 -->
+<div class="panel">
+  <div class="panel-header"><span class="panel-title">不良品柏拉图（Pareto）</span><span class="arrow-btn">&#8249;</span></div>
+  <div class="legend-row">
+    <span class="legend-item"><span class="legend-dot" style="background:#ef5350"></span>封口不良</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#ffa726"></span>液位偏低</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#66bb6a"></span>标签歪斜</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#42a5f5"></span>异物</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#ab47bc"></span>其他</span>
+  </div>
+  <div class="bar-chart-mini">
+    <div class="bar-group">
+      <div class="bar-col"><div class="bar-rect" style="height:96%;background:#ef5350"></div><span class="bar-val">42</span><span class="bar-xlabel">封口不良</span></div>
+      <div class="bar-col"><div class="bar-rect" style="height:74%;background:#ffa726"></div><span class="bar-val">31</span><span class="bar-xlabel">液位偏低</span></div>
+      <div class="bar-col"><div class="bar-rect" style="height:52%;background:#66bb6a"></div><span class="bar-val">22</span><span class="bar-xlabel">标签歪斜</span></div>
+      <div class="bar-col"><div class="bar-rect" style="height:34%;background:#42a5f5"></div><span class="bar-val">14</span><span class="bar-xlabel">异物</span></div>
+      <div class="bar-col"><div class="bar-rect" style="height:18%;background:#ab47bc"></div><span class="bar-val">8</span><span class="bar-xlabel">其他</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Row 1 Center: Big Numbers -->
+<div class="panel big-num-panel">
+  <div class="big-num-item"><div class="big-num-value">99.2%</div><div class="big-num-label">批次综合合格率</div></div>
+  <div class="big-num-item"><div class="big-num-value">117</div><div class="big-num-label">当期不良品总数（件）</div></div>
+</div>
+
+<!-- Row 1 Right: 各产线合格率 -->
+<div class="panel">
+  <div class="panel-header"><span class="panel-title">各产线批次合格率</span></div>
+  <div class="progress-list" style="padding-top:8px">
+    <div class="progress-item"><span class="progress-label">一线</span><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:99%;background:linear-gradient(90deg,#66bb6a,#43a047)">99.1%</div></div><span class="progress-val">99.1%</span></div>
+    <div class="progress-item"><span class="progress-label">二线</span><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:98%;background:linear-gradient(90deg,#42a5f5,#1e88e6)">98.6%</div></div><span class="progress-val">98.6%</span></div>
+    <div class="progress-item"><span class="progress-label">三线</span><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:99%;background:linear-gradient(90deg,#66bb6a,#43a047)">99.3%</div></div><span class="progress-val">99.3%</span></div>
+    <div class="progress-item"><span class="progress-label">四线</span><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:97%;background:linear-gradient(90deg,#ffa726,#f57c00)">97.8%</div></div><span class="progress-val">97.8%</span></div>
+    <div class="progress-item"><span class="progress-label">五线</span><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:99%;background:linear-gradient(90deg,#66bb6a,#43a047)">99.0%</div></div><span class="progress-val">99.0%</span></div>
+  </div>
+  <div class="kpi-row" style="margin-top:12px">
+    <div class="kpi-card"><div class="kpi-val">3</div><div class="kpi-label">客户投诉（起）</div></div>
+    <div class="kpi-card"><div class="kpi-val">0.04%</div><div class="kpi-label">退货率</div></div>
+    <div class="kpi-card"><div class="kpi-val">100%</div><div class="kpi-label">检出覆盖率</div></div>
+  </div>
+</div>
+
+<!-- Row 2 Left: 检测项目分布（Pie） -->
+<div class="panel">
+  <div class="panel-header"><span class="panel-title">检测项目分布</span><span class="arrow-btn">&#8249;</span></div>
+  <div class="pie-container">
+    <div class="pie-chart">
+      <div class="pie-inner"><div class="pie-inner-text">12</div><div class="pie-inner-sub">检测项</div></div>
+    </div>
+    <div class="pie-legend">
+      <div>&#128308; 理化指标</div><div>&#128309; 微生物</div>
+      <div>&#128309; 包装密封</div><div>&#128309; 净含量</div><div>&#9679; 其他</div>
+    </div>
+  </div>
+  <div class="legend-row" style="margin-top:-4px">
+    <span class="legend-item"><span class="legend-dot" style="background:#ec407a"></span>理化指标</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#ab47bc"></span>微生物</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#42a5f5"></span>包装密封</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#26c6da"></span>净含量</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#455a64"></span>其他</span>
+  </div>
+</div>
+
+<!-- Row 2 Center: Map (spans 2 rows) -->
+<div class="panel" style="grid-row:span 2">
+  <div class="map-area">
+    <svg viewBox="0 0 500 400" class="china-map-svg">
+      <path class="map-province active" d="M360,185 L380,175 L400,178 L415,190 L410,210 L390,215 L365,205 Z"/>
+      <path class="map-province" d="M300,80 L340,75 L360,95 L350,120 L315,115 Z"/><path class="map-province" d="M240,70 L295,68 L300,95 L270,105 L235,95 Z"/>
+      <path class="map-province" d="M340,125 L385,120 L400,145 L375,165 L340,155 Z"/><path class="map-province" d="M260,115 L335,110 L340,155 L290,170 L255,150 Z"/>
+      <path class="map-province" d="M180,100 L255,95 L260,145 L225,165 L175,145 Z"/><path class="map-province" d="M230,170 L285,165 L290,210 L255,230 L225,210 Z"/>
+      <path class="map-province" d="M290,172 L340,168 L345,210 L310,228 L285,208 Z"/><path class="map-province" d="M160,155 L225,150 L230,200 L190,220 L155,195 Z"/>
+      <path class="map-province" d="M100,130 L175,125 L180,175 L140,195 L100,170 Z"/><path class="map-province" d="M185,220 L250,215 L255,265 L215,285 L180,260 Z"/>
+      <path class="map-province" d="M255,232 L305,228 L310,275 L275,295 L248,270 Z"/><path class="map-province" d="M170,268 L220,263 L225,310 L190,328 L163,300 Z"/>
+      <path class="map-province" d="M225,290 L272,286 L278,332 L242,350 L217,322 Z"/><path class="map-province" d="M280,298 L322,294 L328,340 L295,358 L275,332 Z"/>
+      <path class="map-province" d="M320,268 L365,264 L370,308 L340,326 L315,302 Z"/><path class="map-province" d="M370,250 L410,246 L415,288 L385,304 L362,282 Z"/>
+      <path class="map-province" d="M410,300 L445,296 L450,336 L420,352 L398,330 Z"/><path class="map-province" d="M355,320 L398,316 L403,356 L370,372 L348,350 Z"/>
+      <text x="375" y="182" class="map-label" font-size="10" fill="#ff8ab3" font-weight="bold">天津</text>
+      <text x="388" y="165" class="map-label">北京</text><text x="415" y="148" class="map-label">黑龙江</text><text x="418" y="178" class="map-label">吉林</text>
+      <text x="375" y="210" class="map-label">辽宁</text><text x="325" y="198" class="map-label">山东</text><text x="303" y="222" class="map-label">河南</text>
+      <text x="270" y="192" class="map-label">山西</text><text x="270" y="238" class="map-label">湖北</text><text x="310" y="256" class="map-label">安徽</text>
+      <text x="338" y="272" class="map-label">江苏</text><text x="358" y="296" class="map-label">上海</text><text x="375" y="326" class="map-label">浙江</text>
+      <text x="340" y="356" class="map-label">福建</text><text x="300" y="322" class="map-label">江西</text><text x="265" y="306" class="map-label">湖南</text>
+      <text x="230" y="272" class="map-label">贵州</text><text x="205" y="240" class="map-label">四川</text><text x="248" y="328" class="map-label">广西</text>
+      <text x="285" y="356" class="map-label">广东</text><text x="310" y="378" class="map-label">海南</text><text x="428" y="328" class="map-label">台湾</text>
+      <text x="430" y="272" class="map-label">香港</text><text x="408" y="288" class="map-label">澳门</text><text x="195" y="140" class="map-label">内蒙古</text>
+      <text x="145" y="160" class="map-label">宁夏</text><text x="125" y="200" class="map-label">甘肃</text><text x="130" y="248" class="map-label">青海</text>
+      <text x="175" y="296" class="map-label">西藏</text><text x="268" y="86" class="map-label">新疆</text><text x="195" y="186" class="map-label">陕西</text>
+      <text x="348" y="216" class="map-label">河北</text><circle cx="378" cy="187" r="5" class="map-highlight-dot"/>
+    </svg>
+    <div class="map-box-south">南海诸岛</div>
+  </div>
+</div>
+
+<!-- Row 2 Right: 品质达成率环示图 -->
+<div class="panel">
+  <div class="panel-header">
+    <span class="panel-title">年度品质目标达成率</span>
+    <div style="font-size:12px;color:#b0bec5">2024</div>
+    <span class="pie-header-right">综合达成</span>
+    <span class="arrow-btn">&#8250;</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;padding:10px 0">
+    <div style="position:relative;width:110px;height:110px;">
+      <svg width="110" height="110" viewBox="0 0 110 110">
+        <circle cx="55" cy="55" r="44" fill="none" stroke="rgba(30,55,80,.4)" stroke-width="12"/>
+        <circle cx="55" cy="55" r="44" fill="none" stroke="#ec407a" stroke-width="12"
+                stroke-dasharray="267 276" stroke-linecap="round" transform="rotate(-90 55 55)"
+                filter="drop-shadow(0 0 4px rgba(236,64,122,.4))"/>
+        <text x="55" y="52" text-anchor="middle" font-size="16" fill="#ff8ab3" font-weight="700">96.8%</text>
+        <text x="55" y="68" text-anchor="middle" font-size="9" fill="#607d8b">目标达成</text>
+      </svg>
+    </div>
+    <div class="pie-legend">
+      <div style="color:#ec407a;font-weight:600">&#9679; 年度品质目标达成</div>
+      <div style="color:#90a4ae;font-size:11px;margin-top:4px">标杆线 95.0%</div>
+    </div>
+  </div>
+</div>
+
+<!-- Row 3 Left: 月度品质趋势曲线 -->
+<div class="panel">
+  <div class="panel-header">
+    <span class="panel-title">月度批次合格率趋势</span>
+    <div style="font-size:12px;color:#b0bec5">&#9745;2024</div>
+  </div>
+  <div class="legend-row">
+    <span class="legend-item"><span class="legend-dot" style="background:#ec407a"></span>一线</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#42a5f5"></span>二线</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#66bb6a"></span>三线</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#ffa726"></span>四线</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#ab47bc"></span>五线</span>
+  </div>
+  <div class="chart-area">
+    <svg width="100%" height="100%" viewBox="0 0 340 150" preserveAspectRatio="none">
+      <line x1="36" y1="128" x2="330" y2="128" stroke="#2a5a8a"/>
+      <g fill="#546e7a" font-size="8"><text x="34" y="138">1月</text><text x="62" y="138">3月</text><text x="92" y="138">5月</text><text x="124" y="138">7月</text><text x="156" y="138">9月</text><text x="188" y="138">11月</text></g>
+      <g fill="#546e7a" font-size="8"><text x="8" y="126">0</text><text x="4" y="102">0.2</text><text x="4" y="78">0.4</text><text x="4" y="54">0.6</text><text x="4" y="30">0.8</text><text x="4" y="10">1</text><text x="-2" y="136">0.5</text></g>
+      <polyline points="40,18 68,22 96,20 124,24 152,22 180,26 208,24 236,28 264,26 292,30 320,28" fill="none" stroke="#ec407a" stroke-width="1.8"/>
+      <polyline points="40,30 68,34 96,32 124,36 152,34 180,38 208,36 236,40 264,38 292,42 320,40" fill="none" stroke="#42a5f5" stroke-width="1.8"/>
+      <polyline points="40,24 68,28 96,26 124,30 152,28 180,32 208,30 236,34 264,32 292,36 320,34" fill="none" stroke="#66bb6a" stroke-width="1.8"/>
+      <polyline points="40,40 68,44 96,42 124,46 152,44 180,48 208,46 236,50 264,48 292,52 320,50" fill="none" stroke="#ffa726" stroke-width="1.8"/>
+      <polyline points="40,32 68,36 96,34 124,38 152,36 180,40 208,38 236,42 264,40 292,44 320,42" fill="none" stroke="#ab47bc" stroke-width="1.8"/>
+    </svg>
+  </div>
+</div>
+
+<!-- Row 3 Right: 客诉/退货分布 -->
+<div class="panel">
+  <div class="panel-header">
+    <span class="panel-title">客户投诉类型分布</span>
+    <div style="font-size:12px;color:#b0bec5">&#9745;2024</div>
+  </div>
+  <div class="legend-row">
+    <span class="legend-item"><span class="legend-dot" style="background:#ef5350"></span>包装破损</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#ffa726"></span>口感异常</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#42a5f5"></span>异物</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#ab47bc"></span>其他</span>
+  </div>
+  <div class="chart-area">
+    <svg width="100%" height="100%" viewBox="0 0 340 140" preserveAspectRatio="none">
+      <line x1="40" y1="118" x2="330" y2="118" stroke="#2a5a8a"/>
+      <g fill="#546e7a" font-size="8"><text x="8" y="116">0</text><text x="8" y="92">2</text><text x="8" y="68">4</text><text x="8" y="44">6</text><text x="8" y="20">8</text><text x="8" y="6">10</text><text x="4" y="130">0.5</text></g>
+      <g fill="#546e7a" font-size="8"><text x="52" y="130">W06</text><text x="104" y="130">W07</text><text x="156" y="130">W08</text><text x="208" y="130">W09</text><text x="260" y="130">W10</text><text x="312" y="130">W11</text></g>
+      <g transform="translate(48,0)">
+        <rect x="0" y="102" width="10" height="16" rx="1" fill="#ef5350"/><rect x="12" y="98" width="10" height="20" rx="1" fill="#ffa726"/>
+        <rect x="24" y="94" width="10" height="24" rx="1" fill="#42a5f5"/><rect x="36" y="90" width="10" height="28" rx="1" fill="#ab47bc"/>
+      </g>
+      <g transform="translate(100,0)">
+        <rect x="0" y="100" width="10" height="18" rx="1" fill="#ef5350"/><rect x="12" y="94" width="10" height="24" rx="1" fill="#ffa726"/>
+        <rect x="24" y="88" width="10" height="30" rx="1" fill="#42a5f5"/><rect x="36" y="84" width="10" height="34" rx="1" fill="#ab47bc"/>
+      </g>
+      <g transform="translate(152,0)">
+        <rect x="0" y="96" width="10" height="22" rx="1" fill="#ef5350"/><rect x="12" y="88" width="10" height="30" rx="1" fill="#ffa726"/>
+        <rect x="24" y="80" width="10" height="38" rx="1" fill="#42a5f5"/><rect x="36" y="74" width="10" height="44" rx="1" fill="#ab47bc"/>
+      </g>
+      <g transform="translate(204,0)">
+        <rect x="0" y="102" width="10" height="16" rx="1" fill="#ef5350"/><rect x="12" y="98" width="10" height="20" rx="1" fill="#ffa726"/>
+        <rect x="24" y="94" width="10" height="24" rx="1" fill="#42a5f5"/><rect x="36" y="92" width="10" height="26" rx="1" fill="#ab47bc"/>
+      </g>
+      <g transform="translate(256,0)">
+        <rect x="0" y="104" width="10" height="14" rx="1" fill="#ef5350"/><rect x="12" y="100" width="10" height="18" rx="1" fill="#ffa726"/>
+        <rect x="24" y="96" width="10" height="22" rx="1" fill="#42a5f5"/><rect x="36" y="94" width="10" height="24" rx="1" fill="#ab47bc"/>
+      </g>
+      <g transform="translate(308,0)">
+        <rect x="0" y="103" width="10" height="15" rx="1" fill="#ef5350"/><rect x="12" y="99" width="10" height="19" rx="1" fill="#ffa726"/>
+        <rect x="24" y="95" width="10" height="23" rx="1" fill="#42a5f5"/><rect x="36" y="93" width="10" height="25" rx="1" fill="#ab47bc"/>
+      </g>
+    </svg>
+  </div>
+</div>
+
+</div><!-- end grid -->
+</main>
+</body>
+</html>

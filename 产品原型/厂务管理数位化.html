@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>厂务管理数智化综合看板</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Microsoft YaHei','PingFang SC',sans-serif;background:#061220;min-height:100vh;color:#e0e8f0}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 60% 10%,rgba(0,229,255,.025) 0%,transparent 50%);pointer-events:none}
+
+/* Header */
+.header{height:52px;background:linear-gradient(90deg,#0a1828,#0e2438,#0a1828);display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid rgba(80,160,220,.12);position:sticky;top:0;z-index:100}
+.header-left{display:flex;align-items:center;gap:16px}.logo{font-size:17px;font-weight:bold;color:#ffd54f;letter-spacing:1px;text-shadow:0 0 12px rgba(255,213,79,.2)}
+.nav-links{display:flex;gap:12px;font-size:11px;color:#455a64}.nav-links a{color:#607d8b;text-decoration:none;padding:2px 4px;border-radius:3px;transition:.15s}.nav-links a:hover{color:#4fc3f7;background:rgba(79,195,247,.08)}
+.page-title-text{font-size:20px;font-weight:700;color:#fff;letter-spacing:2px;text-shadow:0 0 14px rgba(79,195,247,.2)}
+.header-right{display:flex;align-items:center;gap:10px;font-size:12px;color:#78909c}.btn-logout{background:rgba(66,133,244,.2);border:1px solid rgba(66,133,244,.32);color:#90caf9;padding:4px 14px;border-radius:4px;cursor:pointer;font-size:12px;transition:.2s}
+.top-tools{display:flex;gap:5px;font-size:16px;color:#607d8b}
+.datetime-box{background:rgba(25,55,85,.4);border:1px solid rgba(79,195,247,.14);padding:4px 12px;border-radius:4px;font-size:13px;color:#80deea;font-family:'Consolas',monospace;letter-spacing:1px}
+.home-btn{display:inline-flex;align-items:center;gap:4px;background:rgba(0,188,212,.18);border:1px solid rgba(0,188,212,.35);color:#80deea;padding:5px 14px;border-radius:4px;cursor:pointer;font-size:12px;text-decoration:none;transition:.2s}
+.home-btn:hover{background:rgba(0,188,212,.3)}
+
+/* Sidebar */
+.sidebar{position:fixed;left:0;top:52px;width:48px;bottom:0;background:linear-gradient(180deg,#08141e,#0c1c2c);border-right:1px solid rgba(80,160,220,.06);display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:2px;z-index:99}
+.sidebar-icon{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;color:#546e7a;font-size:17px;transition:.2s}
+.sidebar-icon:hover,.sidebar-icon.active{background:rgba(79,195,247,.12);color:#4fc3f7}
+.sidebar-bottom{margin-top:auto}.menu-btn{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#00acc1,#0097a7);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;cursor:pointer;box-shadow:0 3px 12px rgba(0,188,212,.3);transition:.25s}
+.menu-btn:hover{transform:scale(1.08)}
+
+/* Main */
+.main-content{margin-left:48px;padding:10px 16px;position:relative;z-index:1}
+
+/* Factory title bar */
+.factory-title-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.factory-title{font-size:20px;font-weight:700;color:#00e5ff;letter-spacing:2px;text-shadow:0 0 14px rgba(0,229,255,.25)}
+
+/* Factory area with overlay cards */
+.factory-stage{position:relative;width:100%;height:320px;background:
+  linear-gradient(180deg,
+    rgba(46,125,50,.05) 0%,
+    rgba(27,74,32,.1) 40%,
+    rgba(20,55,28,.08) 70%,
+    rgba(15,40,20,.06) 100%
+  );
+  border-radius:12px;overflow:hidden;border:1px solid rgba(100,180,130,.08);
+  box-shadow:0 4px 24px rgba(0,0,0,.1) inset}
+.factory-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.factory-buildings{display:flex;align-items:flex-end;gap:6px;opacity:.18;filter:saturate(.6)}
+.fbld{background:linear-gradient(180deg,#b0c8b8 0%,#8aa696 100%);border-radius:3px 3px 0 0;position:relative;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.fbld::before{content:'';position:absolute;top:-2px;left:-2px;right:-2px;height:6px;background:linear-gradient(90deg,#c8ddd0,#e0ede5,#c8ddd0);border-radius:3px 3px 0 0}
+
+/* Overlay info cards on factory - enhanced glassmorphism */
+.overlay-card{position:absolute;background:linear-gradient(145deg,rgba(0,35,40,.9),rgba(0,24,30,.82));border:1px solid rgba(0,200,190,.22);border-radius:10px;padding:12px 16px;min-width:190px;backdrop-filter:blur(12px);box-shadow:0 6px 24px rgba(0,0,0,.2),0 0 0 1px rgba(0,200,190,.08) inset}
+.overlay-card .oc-title{font-size:13px;font-weight:700;color:#00e5ff;margin-bottom:8px;letter-spacing:1px;text-shadow:0 0 8px rgba(0,229,255,.2)}
+.oc-row{display:flex;justify-content:space-between;font-size:11.5px;padding:3.5px 0;border-bottom:1px solid rgba(0,200,190,.06)}
+.oc-row:last-child{border-bottom:none}
+.oc-key{color:#90a4ae}.oc-val{color:#e0f7fa;font-weight:600;font-family:'Consolas','Monaco',monospace;text-shadow:0 0 6px rgba(0,229,255,.15)}
+.oc-footer{font-size:10px;color:#4dd0e1;text-align:right;margin-top:5px;padding-top:4px;border-top:1px solid rgba(0,200,190,.1);cursor:pointer}
+
+/* Positioning */
+.oc-wusong{top:18%;left:6%}
+.oc-boiler{top:10%;left:56%}
+.oc-gongbing{top:48%;left:40%}
+.oc-kuangshui{top:44%;right:4%}
+
+/* Factory labels - refined */
+.factory-label{
+  position:absolute;background:linear-gradient(145deg,rgba(0,55,55,.8),rgba(0,40,40,.7));
+  border:1px solid rgba(0,200,190,.18);border-radius:6px;padding:4px 13px;
+  color:#00e5ff;font-size:12px;font-weight:600;
+  box-shadow:0 2px 8px rgba(0,0,0,.15);letter-spacing:.5px
+}
+
+/* Bottom panels row */
+.bottom-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:12px}
+
+.panel{background:linear-gradient(145deg,rgba(8,22,40,.92),rgba(12,30,50,.84));border:1px solid rgba(79,195,247,.08);border-radius:10px;padding:14px;position:relative;box-shadow:0 4px 20px rgba(0,0,0,.1)}
+.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(79,195,247,.35),transparent)}
+.panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.panel-title{font-size:14px;font-weight:600;color:#4fc3f7;letter-spacing:.5px;text-shadow:0 0 8px rgba(79,195,247,.1)}
+.panel-sub{font-size:11px;color:#607d8b}
+.kpi-inline{font-size:12px;color:#80deea;font-weight:600}
+
+/* Key indicators list */
+.indi-list{display:flex;flex-direction:column;gap:5px}
+.indi-item{display:flex;align-items:center;justify-content:space-between;font-size:12px;padding:5px 8px;background:rgba(18,42,65,.35);border-radius:4px;border-left:3px solid transparent;transition:.15s}
+.indi-item:hover{background:rgba(18,42,65,.55)}
+.indi-name{color:#b0bec5}.indi-val{color:#e0f7fa;font-weight:600;font-family:Consolas,monospace;text-shadow:0 0 4px rgba(0,229,255,.1)}
+.indi-dot{width:8px;height:8px;border-radius:50%;margin-right:8px;flex-shrink:0}
+.dot-green{background:#00e676;box-shadow:0 0 6px rgba(0,230,118,.5)}
+.dot-yellow{background:#ffd600;box-shadow:0 0 6px rgba(255,214,0,.5)}
+
+/* Donut charts */
+.donut-area{display:flex;justify-content:space-around;align-items:center;padding:8px 0}
+.donut-chart{position:relative;width:110px;height:110px}
+.donut-svg{transform:rotate(-90deg)}
+.donut-hole-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.donut-num{font-size:26px;font-weight:700;color:#00e5ff;text-shadow:0 0 12px rgba(0,229,255,.3)}.donut-label{font-size:10px;color:#78909c}
+.donut-legend{text-align:center;font-size:11px;margin-top:4px}
+.legend-color{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:middle}
+
+/* Motor monitor table */
+.motor-table{width:100%;border-collapse:collapse;font-size:11.5px}
+.motor-table th{color:#80deea;font-size:11px;font-weight:600;padding:7px 6px;text-align:left;border-bottom:1px solid rgba(79,195,247,.1);background:rgba(18,42,65,.32)}
+.motor-table td{padding:7px 6px;border-bottom:1px solid rgba(255,255,255,.025);color:#b0bec5}
+.status-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:4px}
+.sd-green{background:#00e676;box-shadow:0 0 5px rgba(0,230,118,.5)}
+
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:rgba(79,195,247,.12);border-radius:3px}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left"><span class="logo">康师傅饮品事业</span>
+    <nav class="nav-links"><a href="#">首页</a><a href="#">TPM管理系统</a><a href="#">智能密封系统</a><a href="#">备品备件系统</a><a href="#">厂数智化系统</a><a href="#">能源管理系统</a><a href="#">品质分析系统</a><a href="#">电机监控系统</a></nav>
+  </div>
+  <div class="page-title-text">「 厂务管理数智化综合看板 」</div>
+  <div class="header-right"><a href="廊坊顶津智能管理系统.html" class="home-btn" title="返回总览">&#8962; 首页</a><span class="datetime-box">14:46:20</span><button class="btn-logout">退出</button><div class="top-tools">&#128197; &#127769; &#9881; &#9786;</div></div>
+</header>
+
+<aside class="sidebar">
+  <div class="sidebar-icon active">&#9776;</div><div class="sidebar-icon">&#127968;</div><div class="sidebar-icon">&#9881;</div><div class="sidebar-icon">&#128295;</div><div class="sidebar-icon">&#128202;</div><div class="sidebar-icon">&#128203;</div>
+  <div class="sidebar-bottom"><div class="menu-btn">&#128722;</div></div>
+</aside>
+
+<main class="main-content">
+
+<!-- Factory Stage with overlays -->
+<div class="factory-stage">
+  <div class="factory-placeholder">
+    <div class="factory-buildings">
+      <div class="fbld" style="width:80px;height:55px"></div>
+      <div class="fbld" style="width:140px;height:75px"></div>
+      <div class="fbld" style="width:200px;height:95px"></div>
+      <div class="fbld" style="width:170px;height:85px"></div>
+      <div class="fbld" style="width:120px;height:65px"></div>
+      <div class="fbld" style="width:90px;height:50px"></div>
+      <div style="width:22px;height:50px;border-radius:11px 11px 0 0;background:linear-gradient(180deg,#cfd8dc,#b0bec5);margin-left:8px"></div>
+      <div style="width:22px;height:50px;border-radius:11px 11px 0 0;background:linear-gradient(180deg,#cfd8dc,#b0bec5)"></div>
+    </div>
+  </div>
+
+  <!-- Overlay Card: 无菌高压机房 -->
+  <div class="overlay-card oc-wusong">
+    <div class="oc-title">无菌高压机房</div>
+    <div class="oc-row"><span class="oc-key">低压/主气容管压力</span><span class="oc-val">0.739</span></div>
+    <div class="oc-row"><span class="oc-key">生产线螺杆压缩机</span><span class="oc-val">0.75</span></div>
+    <div class="oc-row"><span class="oc-key">无通高压机房1#高压机</span><span class="oc-val">2.767</span></div>
+    <div class="oc-row"><span class="oc-key">无通高压机房2#高压机</span><span class="oc-val">2.766</span></div>
+    <div class="oc-footer">&#9664; 1 - 4 / 10  &#9658;</div>
+  </div>
+
+  <!-- Labels -->
+  <div class="factory-label" style="top:7%;left:53%">污水站</div>
+  <div class="factory-label" style="top:25%;left:57%">锅炉房</div>
+  <div class="factory-label" style="top:57%;left:39%">公建冰水机房</div>
+  <div class="factory-label" style="top:51%;right:2%">矿水罐机房</div>
+</div>
+
+<!-- Bottom Row: 3 panels -->
+<div class="bottom-row">
+
+  <!-- Panel 1: 关键指标 -->
+  <div class="panel">
+    <div class="panel-header">
+      <div><span class="panel-title">关键指标</span><br><span class="panel-sub">采集 2026-05-29</span></div>
+      <span class="kpi-inline">共 15 台 · 5 区域</span>
+    </div>
+    <div class="indi-list">
+      <div class="indi-item"><span style="display:flex;align-items:center"><span class="indi-dot dot-green"></span><span class="indi-name">污水站 污水总进水</span></span><span class="indi-val">553826.3</span><span style="color:#ffa726;font-size:11px">&#9679;40.2</span></div>
+      <div class="indi-item"><span style="display:flex;align-items:center"><span style="color:#607d8b;font-size:10px;margin-right:4px">14:30:00</span><span class="indi-name"></span></span></div>
+      <div class="indi-item"><span style="display:flex;align-items:center"><span class="indi-dot dot-green"></span><span class="indi-name">污水站 中水回用水总进水</span></span><span class="indi-val">41374</span><span style="color:#90a4ae;font-size:11px">&#8776; 24</span></div>
+      <div class="indi-item"><span style="display:flex;align-items:center"><span style="color:#607d8b;font-size:10px;margin-right:4px">14:30:00</span><span class="indi-name"></span></span></div>
+      <div class="indi-item"><span style="display:flex;align-items:center"><span class="indi-dot dot-green"></span><span class="indi-name">中水处理设备套数</span></span><span class="indi-val">256.2</span><span style="color:#90a4ae;font-size:11px">差: 0</span></div>
+      <div class="indi-item"><span style="display:flex;align-items:center"><span style="color:#607d8b;font-size:10px;margin-right:4px">14:30:00</span><span class="indi-name"></span></span></div>
+      <div class="indi-item"><span style="display:flex;align-items:center"><span class="indi-dot dot-green"></span><span class="indi-name">锅炉房烟气温度</span></span><span class="indi-val">216</span></div>
+      <div class="indi-item"><span style="display:flex;align-items:center"><span style="color:#607d8b;font-size:10px;margin-right:4px">14:30:00</span><span class="indi-name"></span></span></div>
+      <div class="indi-item"><span style="display:flex;align-items:center"><span class="indi-dot dot-yellow"></span><span class="indi-name">无菌高压机房_低压主气管压力</span></span><span class="indi-val">0.7</span></div>
+    </div>
+  </div>
+
+  <!-- Panel 2: 设备在线概况 (Donuts) -->
+  <div class="panel">
+    <div class="panel-header"><span class="panel-title">设备在线概况</span></div>
+    <div class="donut-area">
+      <div class="donut-chart">
+        <svg width="110" height="110" viewBox="0 0 110 110" class="donut-svg">
+          <circle cx="55" cy="55" r="42" fill="none" stroke="rgba(30,55,80,.4)" stroke-width="14"/>
+          <circle cx="55" cy="55" r="42" fill="none" stroke="#ff9800" stroke-width="14"
+                  stroke-dasharray="37 264" stroke-linecap="round"/>
+          <circle cx="55" cy="55" r="42" fill="none" stroke="#00e5ff" stroke-width="14"
+                  stroke-dasharray="227 264" stroke-dashoffset="-37"
+                  filter="drop-shadow(0 0 4px rgba(0,229,255,.3))"/>
+        </svg>
+        <div class="donut-hole-text"><div class="donut-num">31</div><div class="donut-label">台总数</div></div>
+        <div class="donut-legend"><span class="legend-color" style="background:#00e5ff"></span>在线 <span class="legend-color" style="background:#ff9800"></span>离线</div>
+      </div>
+      <div class="donut-chart">
+        <svg width="110" height="110" viewBox="0 0 110 110" class="donut-svg">
+          <circle cx="55" cy="55" r="42" fill="none" stroke="rgba(30,55,80,.4)" stroke-width="14"/>
+          <circle cx="55" cy="55" r="42" fill="none" stroke="#ff9800" stroke-width="14"
+                  stroke-dasharray="31 264" stroke-linecap="round"/>
+          <circle cx="55" cy="55" r="42" fill="none" stroke="#00e5ff" stroke-width="14"
+                  stroke-dasharray="233 264" stroke-dashoffset="-31"
+                  filter="drop-shadow(0 0 4px rgba(0,229,255,.3))"/>
+        </svg>
+        <div class="donut-hole-text"><div class="donut-num">143</div><div class="donut-label">采集点位</div></div>
+        <div class="donut-legend"><span class="legend-color" style="background:#00e5ff"></span>正常点位 <span class="legend-color" style="background:#ff9800"></span>断线点位</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel 3: 电机监测 / 厂务处 -->
+  <div class="panel">
+    <div class="panel-header">
+      <div><span class="panel-title">电机监测 · 厂务处</span><br><span class="panel-sub">采集 2026-05-29</span></div>
+      <span class="kpi-inline">共 14 台 · 喝量 1 · 离线 1</span>
+    </div>
+    <table class="motor-table">
+      <thead><tr><th colspan="4">机列 26.6&#8451; 盒温 28.5&#8451;</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="2" style="color:#80deea">矿水罐机房_4#高压机<br><span style="color:#607d8b;font-size:10px">14:00:00</span></td><td>震0/mm/s</td><td>X轴 0 &nbsp;Y轴 0 &nbsp;Z轴 0</td><td><span class="status-dot sd-green"></span></td></tr>
+        <tr><td colspan="2">轴承温度 30.29</td><td></td></tr>
+        <tr><td rowspan="2" style="color:#80deea">公建冰水机房_离心机...<br><span style="color:#607d8b;font-size:10px">14:00:00</span></td><td>A相0A &nbsp;B相0.4A &nbsp;C相0A</td><td>机列房 27&#8451;</td><td><span class="status-dot sd-green"></span></td></tr>
+        <tr><td colspan="2">盒温 26.7&#8451; 震 2.62mm/s</td><td></td></tr>
+        <tr><td rowspan="2"><span style="color:#607d8b;font-size:10px">14:00:00</span></td><td>A相1.67 &nbsp;B相 1.42 &nbsp;Z轴 0.53</td><td></td><td><span class="status-dot sd-green"></span></td></tr>
+        <tr><td colspan="2">轴承温度 29.66</td><td></td></tr>
+        <tr><td><span style="color:#607d8b;font-size:10px">14:00:00</span></td><td>A相7A &nbsp;B相:50.3A &nbsp;C相:53.1A</td><td></td><td><span class="status-dot sd-green"></span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div><!-- end bottom-row -->
+
+</main>
+</body>
+</html>
