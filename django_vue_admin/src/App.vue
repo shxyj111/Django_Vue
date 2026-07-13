@@ -1,47 +1,49 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
-  <div class="demo">
-    <button @click="testLogin">测试连接后端</button>
-    <p>后端返回：{{ message }}</p>
+  <div id="app">
+    <header class="nav" v-if="showNav">
+      <span class="logo">Admin</span>
+      <router-link to="/">控制台</router-link>
+      <router-link to="/users">用户管理</router-link>
+      <router-link to="/about">关于</router-link>
+      <span class="spacer"></span>
+      <span v-if="user" class="user">{{ user.nickname }}</span>
+      <a href="#" @click.prevent="logout">退出</a>
+    </header>
+    <main class="content">
+      <router-view />
+    </main>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-import request from './api/request'
-
 export default {
   name: 'App',
-  components: {
-    HelloWorld
-  },
-  data() {
-    return {
-      message: ''
+  computed: {
+    showNav() {
+      return this.$route.path !== '/login'
+    },
+    user() {
+      try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null }
     }
   },
   methods: {
-    async testLogin() {
-      try {
-        // 实际请求地址：/api/login/  （经代理转发到 Django 的 /api/login/）
-        const res = await request.get('/login/')
-        this.message = typeof res.data === 'string' ? res.data : JSON.stringify(res.data)
-      } catch (err) {
-        this.message = '请求失败：' + err.message
-      }
+    logout() {
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      this.$router.push('/login')
     }
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Avenir, Helvetica, Arial, sans-serif; background: #f0f2f5; color: #2c3e50; }
+.nav { display: flex; align-items: center; gap: 16px; padding: 0 24px; height: 56px; background: #001529; color: #fff; }
+.nav a { color: #fff; text-decoration: none; }
+.nav a.router-link-active { color: #409eff; font-weight: bold; }
+.nav .logo { font-weight: bold; font-size: 18px; }
+.nav .spacer { flex: 1; }
+.nav .user { color: #409eff; }
+.content { padding: 0; }
 </style>
