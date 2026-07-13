@@ -4,6 +4,7 @@
       <span class="logo">Admin</span>
       <router-link to="/">控制台</router-link>
       <router-link to="/users">用户管理</router-link>
+      <a href="#" @click.prevent="openDashboard">智能管理</a>
       <router-link to="/about">关于</router-link>
       <span class="spacer"></span>
       <span v-if="user" class="user">{{ user.nickname }}</span>
@@ -20,13 +21,19 @@ export default {
   name: 'App',
   computed: {
     showNav() {
-      return this.$route.path !== '/login'
+      // 大屏系统（/portal）在新标签页打开，有独立全屏布局，隐藏主应用导航
+      return this.$route.path !== '/login' && !this.$route.path.startsWith('/portal')
     },
     user() {
       try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null }
     }
   },
   methods: {
+    openDashboard() {
+      // 大屏系统在新标签页打开
+      const url = window.location.origin + '/#/portal'
+      window.open(url, '_blank')
+    },
     logout() {
       localStorage.removeItem('token')
       localStorage.removeItem('user')
