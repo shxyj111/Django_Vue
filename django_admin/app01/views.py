@@ -1,18 +1,13 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.hashers import check_password
 import json
-
-# 演示数据（真实项目应从 MySQL 模型查询，例如 User.objects.all()）
-MOCK_USERS = [
-    {'id': 1, 'username': 'admin', 'nickname': '管理员', 'role': 'admin'},
-    {'id': 2, 'username': 'alice', 'nickname': '爱丽丝', 'role': 'user'},
-    {'id': 3, 'username': 'bob', 'nickname': '鲍勃', 'role': 'user'},
-]
+from .models import User
 
 
 @csrf_exempt
 def login(request):
-    """登录接口：POST username/password，返回 token"""
+    """登录接口：POST username/password，返回 token（校验数据库用户）"""
     if request.method != 'POST':
         return JsonResponse({'code': 405, 'msg': '仅支持 POST 请求'}, status=405)
     try:
@@ -24,25 +19,34 @@ def login(request):
     password = data.get('password')
     if not username or not password:
         return JsonResponse({'code': 401, 'msg': '用户名或密码不能为空'}, status=401)
-    # 演示校验：真实项目应查询数据库并比对密码哈希
-    if password != '123456':
-        return JsonResponse({'code': 401, 'msg': '用户名或密码错误'}, status=401)
-    user = next((u for u in MOCK_USERS if u['username'] == username), None)
-    if not user:
+
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
         return JsonResponse({'code': 401, 'msg': '用户不存在'}, status=401)
-    token = f'token-{username}-{user["id"]}'
-    return JsonResponse({'code': 0, 'msg': '登录成功', 'data': {'token': token, 'user': user}})
+
+    if not check_password(password, user.password):
+        return JsonResponse({'code': 401, 'msg': '用户名或密码错误'}, status=401)
+
+    token = f'token-{username}-{user.id}'
+    return JsonResponse({'code': 0, 'msg': '登录成功', 'data': {
+        'token': token,
+        'user': {
+            'id': user.id,
+            'username': user.username,
+            'nickname': user.nickname,
+            'role': user.role
+        }
+    }})
 
 
 @csrf_exempt
 def user_list(request):
-    """用户列表接口：GET"""
+    """用户列表接口：GET（直接查数据库）"""
     if request.method != 'GET':
         return JsonResponse({'code': 405, 'msg': '仅支持 GET 请求'}, status=405)
-    return JsonResponse({
-        'code': 0, 'msg': 'ok',
-        'data': {'list': MOCK_USERS, 'total': len(MOCK_USERS)}
-    })
+    users = list(User.objects.values('id', 'username', 'nickname', 'role'))
+    return JsonResponse({'code': 0, 'msg': 'ok', 'data': {'list': users, 'total': len(users)}})
 
 
 @csrf_exempt
