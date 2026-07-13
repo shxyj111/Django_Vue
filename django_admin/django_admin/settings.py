@@ -38,15 +38,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app01',
+    # 创建的app要在这里注册，否则会找不到页面，标准写法是app01.apps.App01Config(标准为app名称+config字段，为驼峰命名法)
+    'app01.apps.App01Config',
     # 产品原型对应的七大业务应用（1 主 + 6 子）
-    'portal',
-    'tpm',
-    'facility',
-    'quality',
-    'spare',
-    'motor',
-    'energy',
+    'portal.apps.PortalConfig',
+    'tpm.apps.TpmConfig',
+    'facility.apps.FacilityConfig',
+    'quality.apps.QualityConfig',
+    'spare.apps.SpareConfig',
+    'motor.apps.MotorConfig',
+    'energy.apps.EnergyConfig',
 ]
 
 MIDDLEWARE = [
@@ -64,7 +65,8 @@ ROOT_URLCONF = 'django_admin.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # 默认这里是有的，首先会去系统默认的目录../templates下寻找静态模板文件，再去根据注册的app顺序去每一个的app.tempaltes目录下寻找静态模板文件
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

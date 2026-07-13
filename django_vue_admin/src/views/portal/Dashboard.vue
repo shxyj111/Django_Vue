@@ -3,7 +3,7 @@
     <!-- 顶部 Header -->
     <header class="header">
       <div class="logo-box">
-        <img src="/imgs/KSF.png" alt="康师傅饮品事业" />
+        <img :src="logoKsf" alt="康师傅饮品事业" />
       </div>
       <h1 class="page-title">廊坊顶津智能管理系统</h1>
       <div class="header-btns">
@@ -30,20 +30,6 @@
 
     <!-- 主舞台区域（工厂俯瞰图 + 悬浮卡片） -->
     <div class="main-stage">
-      <!-- 工厂占位背景 -->
-      <div class="factory-bg">
-        <div class="factory-placeholder">
-          <div class="factory-building">
-            <div class="building-block" style="width:60px;height:70px"><div class="building-roof"></div></div>
-            <div class="building-block" style="width:90px;height:100px"><div class="building-roof"></div></div>
-            <div class="building-block" style="width:45px;height:55px"><div class="building-roof"></div></div>
-            <div class="building-block" style="width:110px;height:120px"><div class="building-roof"></div></div>
-            <div class="building-block" style="width:65px;height:75px"><div class="building-roof"></div></div>
-          </div>
-          <div class="factory-label">K S F   F A C T O R Y</div>
-        </div>
-        <div class="factory-ground-hint"></div>
-      </div>
 
       <!-- 六个子系统卡片（绝对定位，点击跳转子页面） -->
       <!-- 卡片位置与原型 HTML 一致 -->
@@ -72,27 +58,38 @@
 </template>
 
 <script>
-// 大屏主页面：卡片数据为静态配置，无需调用 API
+// 大屏主页面：图片资源统一从 assets/imgs import，参与 webpack 打包优化
+import overviewBg from '@/assets/imgs/overview-bg.png'
+import logoKsf from '@/assets/imgs/logo-ksf.png'
+import iconSpareParts from '@/assets/imgs/card-spare-parts.png'
+import iconFacility from '@/assets/imgs/card-facility.png'
+import iconTpm from '@/assets/imgs/card-tpm.png'
+import iconEnergy from '@/assets/imgs/card-energy.png'
+import iconMotor from '@/assets/imgs/card-motor.png'
+import iconQuality from '@/assets/imgs/card-quality.png'
+
 export default {
   name: 'DashboardPage',
   computed: {
-    // 背景图用行内样式，避免 css-loader 解析路径失败
+    // 背景图用行内样式 + import 变量，避免 css-loader 解析路径失败
     dashboardStyle() {
       return {
-        backgroundImage: "url('/imgs/KSF-Overview.png')"
+        backgroundImage: "url('" + overviewBg + "')"
       }
-    }
+    },
+    // Header logo
+    logoKsf() { return logoKsf }
   },
   data() {
     return {
-      // 六个子系统的卡片配置：名称、图标、定位类名
+      // 六个子系统的卡片配置：名称、图标（import 变量）、定位类名
       modules: [
-        { key: 'spare',  name: '备品备件系统', icon: '/imgs/1.png', cardClass: 'card-spare-parts' },
-        { key: 'facility',name: '厂务管理数位化', icon: '/imgs/2.png', cardClass: 'card-factory-dig' },
-        { key: 'tpm',    name: 'TPM管理系统',   icon: '/imgs/3.png', cardClass: 'card-tpm' },
-        { key: 'energy', name: '能源管理系统',   icon: '/imgs/4.png', cardClass: 'card-energy' },
-        { key: 'motor',  name: '电机监控系统',   icon: '/imgs/5.png', cardClass: 'card-motor' },
-        { key: 'quality',name: '品质分析系统',   icon: '/imgs/6.png', cardClass: 'card-quality' },
+        { key: 'spare',  name: '备品备件系统', icon: iconSpareParts, cardClass: 'card-spare-parts' },
+        { key: 'facility',name: '厂务管理数位化', icon: iconFacility,   cardClass: 'card-factory-dig' },
+        { key: 'tpm',    name: 'TPM管理系统',   icon: iconTpm,       cardClass: 'card-tpm' },
+        { key: 'energy', name: '能源管理系统',   icon: iconEnergy,    cardClass: 'card-energy' },
+        { key: 'motor',  name: '电机监控系统',   icon: iconMotor,     cardClass: 'card-motor' },
+        { key: 'quality',name: '品质分析系统',   icon: iconQuality,   cardClass: 'card-quality' },
       ]
     }
   }
