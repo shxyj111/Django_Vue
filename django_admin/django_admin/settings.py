@@ -84,6 +84,7 @@ WSGI_APPLICATION = 'django_admin.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# MySQL的标准配置文件，这里必须要pip install mysqlclient这个步骤才能使用连接数据库
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',  # 加载mysql引擎

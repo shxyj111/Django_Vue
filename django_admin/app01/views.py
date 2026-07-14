@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import check_password
 import json
+# 调用app_user数据库
 from .models import User
 
 
@@ -21,6 +22,7 @@ def login(request):
         return JsonResponse({'code': 401, 'msg': '用户名或密码不能为空'}, status=401)
 
     try:
+        # 查找数据库
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         return JsonResponse({'code': 401, 'msg': '用户不存在'}, status=401)
