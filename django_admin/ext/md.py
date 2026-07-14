@@ -11,11 +11,12 @@ class AuthMiddleware(MiddlewareMixin):
         
         # 除了登录页面以外的页面都需要做验证
         info_dict = request.session.get("info")
-        if not info_dict:
+        if info_dict:
+
+            # 给request对象增加一个属性，这样可以快速获取到需要重复获取的那部分用户信息
+            request.info_dict = info_dict
             return 
         
-        # 给request对象增加一个属性，这样可以快速获取到需要重复获取的那部分用户信息
-        request.info_dict = info_dict
         return redirect("/index/")
     
     def process_view(self, response, request):
