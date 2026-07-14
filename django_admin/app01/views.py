@@ -30,8 +30,6 @@ def index(request):
 def home(request):
     # 判断用户是否已经登陆过(cookie校验)，如果没有登陆过就不给进入home界面，而是直接回退到登录界面
     info_dict = request.session.get("info")
-    if not info_dict:
-        return redirect("/index/")
     print("当前登录用户：",info_dict)
     return render(request, 'home.html',{"info":info_dict})
 

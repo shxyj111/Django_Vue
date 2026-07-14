@@ -51,7 +51,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    # 这里其实都是中间件，从上往下一个个执行
+    # 这里其实都是中间件，从上往下一个个执行，中间件的作用就是请求或者返回的途中加很多层东西，每一层都会往信息中增删东西，比如说第二个中间件就是往请求中加入.session参数
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -59,6 +59,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 测试用的中间件
+    # 'ext.ma.MyMiddleware'
 ]
 
 ROOT_URLCONF = 'django_admin.urls'
