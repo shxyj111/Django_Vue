@@ -16,3 +16,9 @@ class User(models.Model):
 
     def __str__(self):
         return self.nickname or self.username
+
+class UserInfo(models.Model):
+    username = models.CharField(max_length=32, verbose_name='用户名')
+    password = models.CharField(max_length=32, verbose_name='密码')
+    age = models.IntegerField(verbose_name='年龄')
+    mobile = models.CharField(max_length=11, verbose_name='手机号')

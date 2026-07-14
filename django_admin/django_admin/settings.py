@@ -94,7 +94,12 @@ DATABASES = {
         'PORT': 3306,  # 端口号
         'HOST': 'localhost'
     }
-}
+    # 在settings文件中默认存在的，作用是不连接MySql数据库而是直接在这个项目中创建一个db.sqlite3的文件当作数据库。但是本质上还是通过models.py来进行操作，只是连接的对象发生了改变
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
+    }
 
 
 # Password validation

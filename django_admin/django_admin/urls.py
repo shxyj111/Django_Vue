@@ -19,4 +19,6 @@ urlpatterns = [
     path('api/energy/', include('energy.urls')),
     # Django 自带后台
     path('admin/', admin.site.urls),
+
+    path('index', app01_views.index),
 ]

@@ -1,10 +1,26 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import check_password
+from django.shortcuts import render
+# from django import models
 import json
 # 调用app_user数据库
 from .models import User
 
+
+def index(request):
+    if request.method == 'GET':
+        return render(request, 'index.html')
+    
+    username = request.POST.get('user')
+    password = request.POST.get('pwd')
+
+    user_object = User.objects.filter(username=username,password=password).first()
+    if user_object:
+        request.seesion["info"] = user_object.username
+        # return render(request, 'success.html')
+    else:
+        return render(request, 'index.html', {'error': '用户名或密码错误'})
 
 @csrf_exempt
 def login(request):
