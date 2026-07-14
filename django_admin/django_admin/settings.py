@@ -59,8 +59,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 测试用的中间件
-    # 'ext.ma.MyMiddleware'
+    # 测试用的中间件，可以用来减轻登录时反复获取用户数据的压力
+    'ext.ma.AthMiddleware'
 ]
 
 ROOT_URLCONF = 'django_admin.urls'

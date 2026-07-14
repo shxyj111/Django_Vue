@@ -1,10 +1,7 @@
 from django.utils.deprecation import MiddlewareMixin
 from django.shortcuts import redirect
 
-class MyMiddleware(MiddlewareMixin):
-
-
-    
+class AuthMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
 
@@ -17,6 +14,8 @@ class MyMiddleware(MiddlewareMixin):
         if not info_dict:
             return 
         
+        # 给request对象增加一个属性，这样可以快速获取到需要重复获取的那部分用户信息
+        request.info_dict = info_dict
         return redirect("/index/")
     
     def process_view(self, response, request):

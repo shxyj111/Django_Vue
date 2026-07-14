@@ -29,8 +29,8 @@ def index(request):
     
 def home(request):
     # 判断用户是否已经登陆过(cookie校验)，如果没有登陆过就不给进入home界面，而是直接回退到登录界面
-    info_dict = request.session.get("info")
-    print("当前登录用户：",info_dict)
+    # 这个request是中间件发过来的请求，而中间件也会接收上一个请求，而每次网页有变动都会走一边中间件，所以这里的request指的是所有中间件走完或者是特殊中间件导致提前截止时的所有请求信息的集合
+    info_dict = request.info_dict
     return render(request, 'home.html',{"info":info_dict})
 
 @csrf_exempt
