@@ -20,6 +20,6 @@ class AuthMiddleware(MiddlewareMixin):
         
         return redirect("/index/")
     
-    def process_view(self, response, request):
+    def process_view(self, request, view_func, view_args, view_kwargs):
         print('process_view')
-        return response
+        return None
