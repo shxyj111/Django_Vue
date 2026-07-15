@@ -19,6 +19,7 @@ class User(models.Model):
 
 class UserInfo(models.Model):
     username = models.CharField(max_length=32, verbose_name='用户名')
-    password = models.CharField(max_length=32, verbose_name='密码')
+    # 长度改为128以存储 Django 的哈希密码（如 pbkdf2_sha256$...）
+    password = models.CharField(max_length=128, verbose_name='密码')
     age = models.IntegerField(verbose_name='年龄')
     mobile = models.CharField(max_length=11, verbose_name='手机号')

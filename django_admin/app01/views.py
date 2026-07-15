@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect
+from django.contrib.auth.hashers import make_password, check_password
 # from django import models
 import json
 # 调用app_user数据库
@@ -15,17 +16,19 @@ def index(request):
     password = request.POST.get('password')
 
     user_object = UserInfo.objects.filter(username=username).first()
-    if user_object and password == user_object.password:
-        """
-        1.生成随机字符串
-        2.返回到用户浏览器的cookie中
-        3.存储到网站的session中 随机字符串+用户标识
-        """
-        request.session["info"] = {"name": user_object.username, "id": user_object.id}
-        return redirect("/home/")
-        # return render(request, 'success.html')
-    else:
-        return render(request, 'index.html', {'error': '用户名或密码错误'})
+    if user_object:
+        # 情况1：密码已是哈希格式，直接校验
+        if check_password(password, user_object.password):
+            request.session["info"] = {"name": user_object.username, "id": user_object.id}
+            return redirect("/home/")
+        # 情况2：兼容旧明文密码——明文匹配成功后自动升级为哈希存储
+        elif user_object.password == password:
+            user_object.password = make_password(password)
+            user_object.save()
+            request.session["info"] = {"name": user_object.username, "id": user_object.id}
+            return redirect("/home/")
+    # 用户名不存在或密码错误
+    return render(request, 'index.html', {'error': '用户名或密码错误'})
     
 def home(request):
     # 判断用户是否已经登陆过(cookie校验)，如果没有登陆过就不给进入home界面，而是直接回退到登录界面
@@ -54,7 +57,14 @@ def login(request):
     except User.DoesNotExist:
         return JsonResponse({'code': 401, 'msg': '用户不存在'}, status=401)
 
-    if password != user.password:
+    # 情况1：密码已是哈希格式，直接校验
+    if check_password(password, user.password):
+        pass
+    # 情况2：兼容旧明文密码——明文匹配成功后自动升级为哈希存储
+    elif user.password == password:
+        user.password = make_password(password)
+        user.save()
+    else:
         return JsonResponse({'code': 401, 'msg': '用户名或密码错误'}, status=401)
 
     token = f'token-{username}-{user.id}'
