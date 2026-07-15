@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    {% block css %}{% endblock %}
+</head>
+<body>
+    <div style="height : 48px;background-color : pink">你好你好你好</div>
+    <div block="container">
+
+        {% block content %}{% endblock %}
+    </div>
+    
+    <script src="jquery.js"></script>
+    {% block js %}{% endblock %}
+</body>
+</html>

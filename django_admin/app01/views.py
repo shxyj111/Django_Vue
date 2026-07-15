@@ -36,6 +36,9 @@ def home(request):
     info_dict = request.info_dict
     return render(request, 'home.html',{"info":info_dict})
 
+def layout(request):
+    return render(request, 'layout.html')
+
 @csrf_exempt
 def login(request):
     """登录接口：POST username/password，返回 token（校验数据库用户）"""

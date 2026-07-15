@@ -23,3 +23,5 @@ class UserInfo(models.Model):
     password = models.CharField(max_length=128, verbose_name='密码')
     age = models.IntegerField(verbose_name='年龄')
     mobile = models.CharField(max_length=11, verbose_name='手机号')
+
+# class 

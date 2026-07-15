@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 创建的app要在这里注册，否则会找不到页面，标准写法是app01.apps.App01Config(标准为app名称+config字段，为驼峰命名法)
     'app01.apps.App01Config',
+    'app02.apps.App02Config',
     # 产品原型对应的七大业务应用（1 主 + 6 子）
     'portal.apps.PortalConfig',
     'tpm.apps.TpmConfig',

@@ -22,4 +22,7 @@ urlpatterns = [
 
     path('index/', app01_views.index),
     path('home/', app01_views.home),
+    path('layout/', app01_views.layout),
+    # app02 关联关系演示
+    path('app02/', include('app02.urls')),
 ]
