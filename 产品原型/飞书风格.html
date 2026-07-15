@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生产能耗 Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background: #f0f7ff;
+            padding: 24px;
+            min-height: 100vh;
+        }
+        .dashboard {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 20px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 112, 224, 0.08);
+            padding: 20px 24px;
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+        .chart {
+            width: 100%;
+            height: 320px;
+        }
+        .bottom-row {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .donut-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 112, 224, 0.08);
+            padding: 20px 24px;
+        }
+        .donut-card .card-title {
+            color: #3b82f6;
+            font-weight: 700;
+            font-size: 17px;
+        }
+        .donut-card .card-title.orange { color: #f59e0b; }
+        .donut-card .card-title.green { color: #10b981; }
+        .donut-chart {
+            width: 100%;
+            height: 300px;
+        }
+        @media (max-width: 1200px) {
+            .dashboard { grid-template-columns: 1fr; }
+            .bottom-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="card">
+            <div class="card-title">日变动费用单箱趋势</div>
+            <div id="chart-trend" class="chart"></div>
+        </div>
+        <div class="card">
+            <div class="card-title">产量结构别占比</div>
+            <div id="chart-ratio" class="chart"></div>
+        </div>
+        <div class="bottom-row">
+            <div class="donut-card">
+                <div class="card-title">水耗用量（吨）</div>
+                <div id="chart-water" class="donut-chart"></div>
+            </div>
+            <div class="donut-card">
+                <div class="card-title orange">电耗用量（度）</div>
+                <div id="chart-electric" class="donut-chart"></div>
+            </div>
+            <div class="donut-card">
+                <div class="card-title green">汽耗用量（吨）</div>
+                <div id="chart-steam" class="donut-chart"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dates = Array.from({length: 30}, (_, i) => {
+            const d = i + 1;
+            return `06-${d.toString().padStart(2, '0')}`;
+        });
+
+        const barData = [135444,100318,95178,133804,105818,140621,153372,111663,137572,106947,65733,59745,96881,104930,81243,78533,111142,132986,89451,79251,90274,107520,125000,118000,98000,87000,92000,105000,99000,110000];
+        const lineData = [1.05,0.98,0.95,1.15,1.08,1.25,1.35,1.02,1.18,1.05,0.92,0.85,1.09,1.12,1.00,0.99,1.08,1.22,1.05,0.98,1.05,1.15,1.18,1.12,0.98,0.92,0.95,1.05,1.00,1.08];
+        const lineLabels = ['1.05','0.98','0.95','1.15','1.08','1.25','1.35','1.02','1.18','1.05','0.92','0.85','1.09','1.12','1.00','0.99','1.08','1.22','1.05','0.98','1.05','1.15','1.18','1.12','0.98','0.92','0.95','1.05','1.00','1.08'];
+
+        const trendChart = echarts.init(document.getElementById('chart-trend'));
+        trendChart.setOption({
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { data: ['日合计产值', '日单箱'], top: 0, left: 0, itemGap: 16 },
+            grid: { left: 10, right: 20, top: 50, bottom: 30, containLabel: true },
+            xAxis: {
+                type: 'category',
+                data: dates,
+                axisLine: { lineStyle: { color: '#e5e7eb' } },
+                axisLabel: { color: '#6b7280', fontSize: 11, rotate: 45, interval: 0 },
+                axisTick: { show: false }
+            },
+            yAxis: {
+                type: 'value',
+                splitLine: { lineStyle: { color: '#f3f4f6' } },
+                axisLabel: { color: '#6b7280', fontSize: 11 }
+            },
+            series: [
+                {
+                    name: '日合计产值',
+                    type: 'bar',
+                    data: barData,
+                    barWidth: '55%',
+                    itemStyle: { color: '#3b82f6', borderRadius: [3, 3, 0, 0] },
+                    label: { show: true, position: 'top', color: '#374151', fontSize: 10, rotate: 45, distance: 8, formatter: v => v.value.toLocaleString() }
+                },
+                {
+                    name: '日单箱',
+                    type: 'line',
+                    data: lineData,
+                    smooth: true,
+                    symbol: 'circle',
+                    symbolSize: 6,
+                    lineStyle: { color: '#f59e0b', width: 3 },
+                    itemStyle: { color: '#f59e0b', borderWidth: 2, borderColor: '#fff' },
+                    label: { show: true, position: 'top', color: '#f59e0b', fontSize: 10, fontWeight: 700, formatter: (p) => lineLabels[p.dataIndex] }
+                }
+            ]
+        });
+
+        const ratioDates = Array.from({length: 31}, (_, i) => {
+            const d = i + 1;
+            return d <= 30 ? `06-${d.toString().padStart(2,'0')}` : '07-01';
+        });
+        const hotData = [55,60,58,52,45,48,50,44,46,42,38,40,35,30,28,25,22,20,18,15,12,10,8,6,5,4,3,2,2,1,1];
+        const sodaData = [30,25,28,30,35,32,30,36,34,38,42,40,45,50,52,55,58,60,62,65,68,70,72,74,75,76,77,78,78,79,79];
+        const waterData = [15,15,14,18,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20];
+
+        const ratioChart = echarts.init(document.getElementById('chart-ratio'));
+        ratioChart.setOption({
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: p => p.map(i => `${i.seriesName}: ${i.value}%`).join('<br/>') },
+            legend: { data: ['热充填占比', '碳酸线占比', '矿水线占比'], top: 0, right: 0, itemGap: 12 },
+            grid: { left: 10, right: 20, top: 50, bottom: 30, containLabel: true },
+            xAxis: {
+                type: 'category',
+                data: ratioDates,
+                axisLine: { lineStyle: { color: '#e5e7eb' } },
+                axisLabel: { color: '#6b7280', fontSize: 11, rotate: 45, interval: 0 },
+                axisTick: { show: false }
+            },
+            yAxis: {
+                type: 'value',
+                max: 100,
+                splitLine: { lineStyle: { color: '#f3f4f6' } },
+                axisLabel: { color: '#6b7280', fontSize: 11, formatter: '{value}%' }
+            },
+            series: [
+                {
+                    name: '热充填占比',
+                    type: 'bar',
+                    stack: 'total',
+                    data: hotData,
+                    barWidth: '55%',
+                    itemStyle: { color: '#3b82f6' },
+                    label: { show: true, position: 'inside', color: '#fff', fontSize: 9, formatter: '{c}%' }
+                },
+                {
+                    name: '碳酸线占比',
+                    type: 'bar',
+                    stack: 'total',
+                    data: sodaData,
+                    itemStyle: { color: '#f59e0b' },
+                    label: { show: true, position: 'inside', color: '#fff', fontSize: 9, formatter: '{c}%' }
+                },
+                {
+                    name: '矿水线占比',
+                    type: 'bar',
+                    stack: 'total',
+                    data: waterData,
+                    itemStyle: { color: '#06b6d4' },
+                    label: { show: true, position: 'inside', color: '#fff', fontSize: 9, formatter: '{c}%' }
+                }
+            ]
+        });
+
+        function createDonut(id, title, total, data, colors) {
+            const chart = echarts.init(document.getElementById(id));
+            chart.setOption({
+                tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
+                legend: {
+                    type: 'scroll',
+                    orient: 'vertical',
+                    left: 0,
+                    top: 'center',
+                    itemGap: 10,
+                    textStyle: { color: '#374151', fontSize: 11 },
+                    formatter: name => {
+                        const item = data.find(d => d.name === name);
+                        return `${name}  ${item.value} (${item.percent}%)`;
+                    }
+                },
+                series: [
+                    {
+                        name: title,
+                        type: 'pie',
+                        radius: ['52%', '72%'],
+                        center: ['60%', '50%'],
+                        avoidLabelOverlap: true,
+                        itemStyle: { borderRadius: 4, borderColor: '#fff', borderWidth: 2 },
+                        label: { show: false },
+                        emphasis: { label: { show: true, fontSize: 14, fontWeight: 'bold' } },
+                        data: data.map((d, i) => ({ value: d.value, name: d.name, itemStyle: { color: colors[i % colors.length] } }))
+                    }
+                ],
+                graphic: [
+                    {
+                        type: 'text',
+                        left: '60%',
+                        top: '45%',
+                        style: { text: total, textAlign: 'center', fill: '#1f2937', fontSize: 24, fontWeight: 700 }
+                    },
+                    {
+                        type: 'text',
+                        left: '60%',
+                        top: '56%',
+                        style: { text: '总数', textAlign: 'center', fill: '#6b7280', fontSize: 13 }
+                    }
+                ]
+            });
+            return chart;
+        }
+
+        createDonut('chart-water', '水耗用量', '23,416.5', [
+            { name: 'GH1 克朗斯热充线', value: 9270.9, percent: '39.59' },
+            { name: 'GH2 瓶包热充一线', value: 12155.5, percent: '51.91' },
+            { name: 'GH4 碳酸线', value: 690.2, percent: '2.95' },
+            { name: 'GH5 水一线', value: 603.7, percent: '2.58' },
+            { name: 'GH6 水二线', value: 696.1, percent: '2.97' }
+        ], ['#3b82f6', '#ef4444', '#f59e0b', '#10b981', '#8b5cf6']);
+
+        createDonut('chart-electric', '电耗用量', '2,514.4', [
+            { name: 'GH2 瓶包热充一线', value: 732466.6, percent: '29.13' },
+            { name: 'GH1 克朗斯热充线', value: 707437.9, percent: '28.14' },
+            { name: '瓶胚2线', value: 227856.4, percent: '9.06' },
+            { name: 'GH5 水一线', value: 212964.2, percent: '8.47' },
+            { name: 'GH6 水二线', value: 221132.8, percent: '8.79' },
+            { name: 'GH4 碳酸线', value: 102807.5, percent: '4.09' },
+            { name: '瓶胚1线', value: 93576.8, percent: '3.72' },
+            { name: 'GH3 瓶包热充二线', value: 4016.0, percent: '0.16' }
+        ], ['#f59e0b', '#3b82f6', '#ec4899', '#10b981', '#8b5cf6', '#f97316', '#eab308', '#a3e635']);
+
+        createDonut('chart-steam', '汽耗用量', '3,210.00', [
+            { name: 'GH2 瓶包热充一线', value: 1514.1, percent: '47.17' },
+            { name: 'GH1 克朗斯热充线', value: 1319.5, percent: '41.11' },
+            { name: 'GH6 水二线', value: 354.2, percent: '11.03' },
+            { name: 'GH4 碳酸线', value: 22.3, percent: '0.69' }
+        ], ['#10b981', '#14b8a6', '#8b5cf6', '#f59e0b']);
+
+        window.addEventListener('resize', () => {
+            trendChart.resize();
+            ratioChart.resize();
+            echarts.getInstanceByDom(document.getElementById('chart-water')).resize();
+            echarts.getInstanceByDom(document.getElementById('chart-electric')).resize();
+            echarts.getInstanceByDom(document.getElementById('chart-steam')).resize();
+        });
+    </script>
+</body>
+</html>
