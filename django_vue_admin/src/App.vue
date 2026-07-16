@@ -6,6 +6,7 @@
       <router-link to="/users">用户管理</router-link>
       <a href="#" @click.prevent="openDashboard">智能管理</a>
       <router-link to="/about">关于</router-link>
+      <router-link to="/directives">指令演示</router-link>
       <span class="spacer"></span>
       <span v-if="user" class="user">{{ user.nickname }}</span>
       <a href="#" @click.prevent="logout">退出</a>

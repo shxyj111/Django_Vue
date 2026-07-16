@@ -3,6 +3,7 @@ import Login from '@/views/Login.vue'
 import Home from '@/views/Home.vue'
 import Users from '@/views/Users.vue'
 import About from '@/views/About.vue'
+import DirectivesDemo from '@/views/DirectivesDemo.vue'
 import PortalLayout from '@/views/portal/PortalLayout.vue'
 import Dashboard from '@/views/portal/Dashboard.vue'
 import SubModule from '@/views/portal/SubModule.vue'
@@ -12,6 +13,7 @@ const routes = [
   { path: '/', name: 'Home', component: Home, meta: { requiresAuth: true } },
   { path: '/users', name: 'Users', component: Users, meta: { requiresAuth: true } },
   { path: '/about', name: 'About', component: About },
+  { path: '/directives', name: 'DirectivesDemo', component: DirectivesDemo },
   // 大屏智能管理系统：独立全屏布局，新标签页打开
   {
     path: '/portal',
