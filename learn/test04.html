@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS 选择器（Selector）演示 test04</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: "Microsoft YaHei", sans-serif; line-height: 1.7; padding: 20px; max-width: 920px; margin: 0 auto; color: #222; }
+    h1 { border-left: 4px solid #2563eb; padding-left: 10px; }
+    section { border: 1px solid #ddd; border-radius: 8px; padding: 14px 18px; margin: 18px 0; }
+    section > h2 { font-size: 18px; color: #1d4ed8; margin-bottom: 6px; }
+    .note { color: #666; font-size: 13px; margin-bottom: 10px; }
+    .demo { padding: 8px 0; border-bottom: 1px dashed #eee; }
+    code { background: #f3f4f6; padding: 1px 5px; border-radius: 3px; font-size: 13px; }
+
+    /* ============ 一、基础 / 简单选择器 ============ */
+    /* 1) 通配符 * ：选中所有元素 */
+    .scope-universal * { border: 1px dashed #cbd5e1; padding: 2px; margin: 2px 0; }
+    /* 2) 类型(标签)选择器 div / h3 / p：按标签名命中 */
+    .scope-type p { color: #16a34a; }                /* 命中 scope-type 内所有 <p> */
+    /* 3) 类选择器 .class */
+    .highlight { background: #fef08a; }              /* 任何带 class="highlight" 的都会黄 */
+    /* 4) ID 选择器 #id ：全页唯一 */
+    #only-one { border: 2px solid #dc2626; padding: 6px; border-radius: 6px; }
+
+    /* ============ 二、组合器 Combinators ============ */
+    /* 后代选择器 A B：A 内部任意层级的 B */
+    .descendant li { color: #2563eb; }              /* .descendant 内所有 li（含嵌套）都蓝 */
+    /* 子代选择器 A > B：仅直接子元素 */
+    .child > li { background: #dbeafe; }            /* 仅 .child 的直接 li 子元素 */
+    /* 相邻兄弟 A + B：紧跟在 A 后面的第一个 B */
+    .adjacent h4 + p { color: #ea580c; font-weight: bold; }
+    /* 通用兄弟 A ~ B：A 之后所有同级 B */
+    .sibling h4 ~ p { text-decoration: underline; }
+
+    /* ============ 三、属性选择器 Attribute Selectors ============ */
+    /* [attr] 存在该属性 */
+    .attr-demo [data-flag] { outline: 2px solid #7c3aed; }
+    /* [attr=val] 精确等于 */
+    .attr-demo [data-role="admin"] { background: #fee2e2; }
+    /* [attr~=val] 以空格分隔的列表中含 val */
+    .attr-demo [data-tags~="vue"] { color: #16a34a; }
+    /* [attr^=val] 以 val 开头 */
+    .attr-demo a[href^="https"]::after { content: " 🔒"; }
+    /* [attr$=val] 以 val 结尾 */
+    .attr-demo a[href$=".pdf"]::after { content: " (PDF)"; }
+    /* [attr*=val] 包含 val */
+    .attr-demo [data-note*="重要"] { border-left: 4px solid #dc2626; padding-left: 6px; }
+    /* [attr|=val] 等于 val 或以 val- 开头（用于 lang） */
+    .attr-demo [lang|="zh"] { font-style: italic; }
+
+    /* ============ 四、伪类 Pseudo-class ============ */
+    /* 伪类用来命中「某种状态/位置」的元素（部分已在 test03 详述） */
+    .pc-demo a:hover { background: #2563eb; color: #fff; padding: 0 4px; }  /* 悬停 */
+    .pc-demo li:first-child { color: #dc2626; font-weight: bold; }          /* 第一个子元素 */
+    .pc-demo input:focus { outline: 2px solid #16a34a; }                    /* 获得焦点 */
+
+    /* ============ 五、伪元素 Pseudo-element ============ */
+    /* 伪元素命中元素的「某个部分」，必须用 :: 双冒号 */
+    .pe-demo p::before { content: "『"; color: #7c3aed; }
+    .pe-demo p::after  { content: "』"; color: #7c3aed; }
+    .pe-demo p::first-letter { font-size: 1.6em; color: #2563eb; }         /* 首字母/首字 */
+    .pe-demo p::first-line { background: #fef9c3; }                        /* 首行 */
+    .pe-demo ::selection { background: #93c5fd; color: #fff; }             /* 选中文字 */
+    .pe-demo input::placeholder { color: #dc2626; font-style: italic; }    /* 占位符 */
+
+    /* ============ 六、分组 & 复合 ============ */
+    /* 分组选择器 A, B, C：逗号并列，一套样式命中多个 */
+    .group-demo h3,
+    .group-demo .box,
+    .group-demo > span { border: 1px solid #2563eb; padding: 4px 8px; border-radius: 6px; display: inline-block; margin: 3px; }
+    /* 复合选择器：连写不空格，命中「同时满足」的元素 */
+    .compound-demo p.note.active { background: #dcfce7; color: #166534; }  /* 既是 p 又带 note 又带 active */
+
+    /* ============ 七、Vue scoped（概念示意） ============ */
+    /* Vue 的 <style scoped> 编译时会给每条规则自动补一个属性选择器 [data-v-xxxx]，
+       等价于给组件内所有元素打上 data-v-xxx 标记，从而「只作用于当前组件」。
+       下面用普通 HTML 模拟它的效果： */
+    [data-v-demo] .scoped-p { color: #7c3aed; }   /* 模拟：仅命中带 data-v-demo 容器内的 .scoped-p */
+  </style>
+</head>
+<body>
+
+  <h1>CSS 选择器（Selector）全演示 · test04</h1>
+  <p class="note">回顾之前的问题「CSS 是只能靠 class 绑定元素吗？」——答案是否定的。下面按选择器类型逐一演示：通配符 / 类型 / 类 / ID / 组合器 / 属性 / 伪类 / 伪元素 / 分组 / 复合 / Vue scoped。</p>
+
+  <!-- ============ 一、基础/简单选择器 ============ -->
+  <section>
+    <h2>一、基础 / 简单选择器（Simple Selectors）</h2>
+    <p class="note"><code>*</code> 通配符 <code>div</code> 类型 <code>.class</code> 类 <code>#id</code> ID</p>
+
+    <div class="demo scope-universal">
+      <strong>① 通配符 <code>*</code></strong>（此区域内每个元素都加虚线边框）：
+      <p>一个段落</p>
+      <span>一个行内</span>
+    </div>
+
+    <div class="demo scope-type">
+      <strong>② 类型选择器 <code>p</code></strong>（区域内所有 <code>&lt;p&gt;</code> 变绿）：
+      <p>我是 p（绿）</p>
+      <span>我是 span（不变）</span>
+    </div>
+
+    <div class="demo">
+      <strong>③ 类选择器 <code>.highlight</code></strong>：
+      <span class="highlight">带 highlight 类 → 黄底</span>
+      <span>无类 → 不变</span>
+    </div>
+
+    <div class="demo">
+      <strong>④ ID 选择器 <code>#only-one</code></strong>：
+      <div id="only-one">我是唯一 id，红框</div>
+    </div>
+  </section>
+
+  <!-- ============ 二、组合器 ============ -->
+  <section>
+    <h2>二、组合器（Combinators：用空格 / 符号表达元素关系）</h2>
+    <p class="note"><code>A B</code> 后代 <code>A &gt; B</code> 子代 <code>A + B</code> 相邻兄弟 <code>A ~ B</code> 通用兄弟</p>
+
+    <div class="demo descendant">
+      <strong>① 后代 <code>.descendant li</code></strong>（含嵌套 li 全蓝）：
+      <ul>
+        <li>一层 li（蓝）
+          <ul><li>二层 li（也蓝，因为是后代）</li></ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="demo child">
+      <strong>② 子代 <code>.child &gt; li</code></strong>（仅直接子 li 蓝底，嵌套不变）：
+      <ul>
+        <li>直接子 li（蓝底）
+          <ul><li>嵌套 li（无蓝底）</li></ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="demo adjacent">
+      <strong>③ 相邻兄弟 <code>h4 + p</code></strong>（紧跟 h4 后的第一个 p 变橙）：
+      <h4>标题 h4</h4>
+      <p>紧跟的 p（橙+粗）</p>
+      <p>隔了一个的 p（不变）</p>
+    </div>
+
+    <div class="demo sibling">
+      <strong>④ 通用兄弟 <code>h4 ~ p</code></strong>（h4 之后所有同级 p 加下划线）：
+      <h4>标题 h4</h4>
+      <p>之后 p1（下划线）</p>
+      <p>之后 p2（下划线）</p>
+    </div>
+  </section>
+
+  <!-- ============ 三、属性选择器 ============ -->
+  <section class="attr-demo">
+    <h2>三、属性选择器（Attribute Selectors）</h2>
+    <p class="note"><code>[attr]</code> 存在 <code>[=]</code> 等于 <code>[~=]</code> 列表含 <code>[^=]</code> 开头 <code>[$=]</code> 结尾 <code>[*=]</code> 包含 <code>[|=]</code> 前缀</p>
+
+    <div class="demo">
+      <strong>① <code>[data-flag]</code></strong> 存在属性即命中：<span data-flag="1">我有 data-flag（紫框）</span> <span>我无（不变）</span>
+    </div>
+    <div class="demo">
+      <strong>② <code>[data-role="admin"]</code></strong>：<span data-role="admin">admin（红底）</span> <span data-role="user">user（不变）</span>
+    </div>
+    <div class="demo">
+      <strong>③ <code>[data-tags~="vue"]</code></strong>（空格列表含 vue）：<span data-tags="vue js">vue js（绿）</span> <span data-tags="react">react（不变）</span>
+    </div>
+    <div class="demo">
+      <strong>④ <code>a[href^="https"]</code> / <code>a[href$=".pdf"]</code></strong>：
+      <a href="https://example.com">https 链接 🔒</a> ·
+      <a href="doc.pdf">doc.pdf (PDF)</a> ·
+      <a href="page.html">page.html（无后缀）</a>
+    </div>
+    <div class="demo">
+      <strong>⑤ <code>[data-note*="重要"]</code></strong> 包含：<span data-note="这是重要内容">含"重要"（红左边框）</span> <span data-note="普通">普通（不变）</span>
+    </div>
+    <div class="demo">
+      <strong>⑥ <code>[lang|="zh"]</code></strong> 前缀：<span lang="zh-CN">zh-CN（斜体）</span> <span lang="en">en（不变）</span>
+    </div>
+  </section>
+
+  <!-- ============ 四、伪类 ============ -->
+  <section class="pc-demo">
+    <h2>四、伪类（Pseudo-class：命中某种状态/位置的元素）</h2>
+    <p class="note">伪类以单冒号 <code>:</code> 开头；以下各选代表演示（完整状态清单见 <code>状态速查.md</code> / <code>test03.html</code>）。</p>
+    <div class="demo">
+      <strong><code>a:hover</code></strong>：<a href="#top">悬停我变蓝底白字</a>
+    </div>
+    <div class="demo">
+      <strong><code>li:first-child</code></strong>：
+      <ul><li>第一个（红+粗）</li><li>第二个</li><li>第三个</li></ul>
+    </div>
+    <div class="demo">
+      <strong><code>input:focus</code></strong>：<input type="text" placeholder="点我聚焦→绿框">
+    </div>
+  </section>
+
+  <!-- ============ 五、伪元素 ============ -->
+  <section class="pe-demo">
+    <h2>五、伪元素（Pseudo-element：命中元素的某个"部分"，双冒号 <code>::</code>）</h2>
+    <p class="note"><code>::before</code> <code>::after</code> <code>::first-letter</code> <code>::first-line</code> <code>::selection</code> <code>::placeholder</code></p>
+    <div class="demo">
+      <p>这段文字示例：首字放大变蓝、首行黄底、两侧加『』引号（体会 before/after/first-letter/first-line）。</p>
+      <p>第二段也同样的伪元素效果，验证它是"样式规则"而非真实 DOM 节点。</p>
+    </div>
+    <div class="demo">
+      <input type="text" placeholder="占位符为红色斜体（::placeholder）">
+      <p class="note">用鼠标拖选上面任意文字，看 <code>::selection</code> 高亮效果。</p>
+    </div>
+  </section>
+
+  <!-- ============ 六、分组 & 复合 ============ -->
+  <section class="group-demo">
+    <h2>六、分组选择器 &amp; 复合选择器</h2>
+    <p class="note">分组 <code>A, B</code>（逗号，多者共用一套样式）；复合 <code>tag.class.class</code>（连写不空格，同时满足）</p>
+    <div class="demo">
+      <strong>① 分组 <code>h3, .box, &gt; span</code></strong> 同款蓝边框：
+      <h3>标题</h3>
+      <div class="box">box</div>
+      <span>span</span>
+    </div>
+    <div class="demo compound-demo">
+      <strong>② 复合 <code>p.note.active</code></strong>（既是 p、带 note、带 active 才绿）：
+      <p class="note active">我三个都满足（绿底）</p>
+      <p class="note">只有 note（不变）</p>
+      <p class="active">只有 active（不变）</p>
+    </div>
+  </section>
+
+  <!-- ============ 七、Vue scoped ============ -->
+  <section>
+    <h2>七、Vue <code>scoped</code> 原理（概念示意）</h2>
+    <p class="note">这不是浏览器原生选择器，而是 Vue 编译期的"语法糖"。下面用普通 HTML 模拟它编译后的结果。</p>
+    <div class="demo" data-v-demo>
+      <strong><code>[data-v-demo] .scoped-p</code></strong>（模拟 scoped：仅当前组件内的 .scoped-p 变紫）：
+      <p class="scoped-p">我在 data-v-demo 容器内（紫）</p>
+    </div>
+    <div class="demo">
+      <p class="scoped-p">我在容器外（不变，证明 scoped 隔离）</p>
+    </div>
+    <p class="note">
+      真实 Vue 组件中写 <code>&lt;style scoped&gt;</code>，编译后会变成类似
+      <code>.scoped-p[data-v-7a9e1f] { ... }</code>，并给该组件模板每个元素自动加上
+      <code>data-v-7a9e1f</code> 属性，从而实现"样式只作用于本组件、不污染全局"。
+      所以 <b>class 只是选择器之一，scoped 的本质是"属性选择器 + 编译期自动加属性"</b>。
+    </p>
+  </section>
+
+</body>
+</html>

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML 标签 & 属性总览页</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: "Microsoft YaHei", sans-serif; display: flex; }
+    /* 左侧固定目录导航 */
+    nav.toc {
+      position: fixed; top: 0; left: 0; bottom: 0; width: 220px;
+      background: #1f2937; color: #e5e7eb; padding: 16px 12px;
+      overflow-y: auto; font-size: 14px;
+    }
+    nav.toc h2 { font-size: 15px; color: #fff; margin-bottom: 8px; }
+    nav.toc .group { margin: 14px 0 4px; color: #93c5fd; font-weight: 700; }
+    nav.toc a { display: block; color: #cbd5e1; text-decoration: none; padding: 4px 8px; border-radius: 4px; }
+    nav.toc a:hover { background: #374151; color: #fff; }
+    /* 右侧内容 */
+    main { margin-left: 220px; padding: 24px 32px; max-width: 980px; }
+    section { margin-bottom: 40px; scroll-margin-top: 16px; }
+    section > h1 { border-left: 4px solid #2563eb; padding-left: 10px; margin-bottom: 12px; }
+    .box { border: 1px solid #d1d5db; border-radius: 8px; padding: 12px; margin: 10px 0; background: #fafafa; }
+    .box h3 { margin-bottom: 8px; color: #374151; }
+    .note { color: #6b7280; font-size: 13px; margin: 4px 0; }
+    code { background: #f3f4f6; padding: 1px 5px; border-radius: 3px; }
+
+    /* ===== 状态（伪类）演示样式 ===== */
+    /* 一、交互 */
+    .demo-link:link { color: #2563eb; }
+    .demo-link:visited { color: #7c3aed; }
+    .demo-link:hover { color: #dc2626; text-decoration: underline; }
+    .demo-link:active { color: #ea580c; }
+    .state-btn { padding: 6px 16px; border: 1px solid #2563eb; background: #eff6ff; border-radius: 5px; cursor: pointer; }
+    .state-btn:hover { background: #2563eb; color: #fff; }
+    .state-btn:active { transform: scale(.95); }
+    .state-btn:focus-visible { outline: 3px solid #f59e0b; }
+    .fw-box { display: inline-block; border: 1px solid #ccc; padding: 6px; border-radius: 6px; margin-left: 8px; }
+    .fw-box:focus-within { box-shadow: 0 0 0 3px #bfdbfe; border-color: #2563eb; }
+    .s-input { padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; }
+    /* 二、结构/位置 */
+    .struct-list li:first-child { color: #dc2626; font-weight: bold; }
+    .struct-list li:last-child { color: #16a34a; font-weight: bold; }
+    .struct-list li:nth-child(2n) { background: #f3f4f6; }
+    .zebra { border-collapse: collapse; width: 100%; }
+    .zebra td { border: 1px solid #ddd; padding: 6px 10px; }
+    .zebra tr:nth-child(odd) { background: #f9fafb; }
+    .zebra tr:nth-child(even) { background: #eef2ff; }
+    .empty-demo:empty { border: 2px dashed #dc2626; min-height: 24px; }
+    .empty-demo:empty::after { content: '（我是空的 :empty）'; color: #dc2626; font-size: 12px; }
+    /* 三、表单 */
+    .state-form div, .state-form label { margin: 6px 0; }
+    .state-form input:disabled { background: #f3f4f6; color: #999; }
+    .state-form input:required { border-left: 4px solid #dc2626; }
+    .state-form input:read-only { background: #fef9c3; }
+    .state-form input:valid { outline: 2px solid #16a34a; }
+    .state-form input:invalid { outline: 2px solid #dc2626; }
+    .state-form input:placeholder-shown { font-style: italic; color: #9ca3af; }
+    .state-form input:in-range { box-shadow: inset 0 0 0 2px #16a34a; }
+    .state-form input:out-of-range { box-shadow: inset 0 0 0 2px #dc2626; }
+    .chk-label input:checked + span { color: #16a34a; font-weight: bold; }
+    /* 四、逻辑 */
+    .logic-list li:not(.special) { color: #6b7280; }
+    .logic-list li.special { color: #dc2626; font-weight: bold; }
+    .has-demo { border: 1px solid #ccc; padding: 8px; border-radius: 6px; }
+    .has-demo:has(input:checked) { background: #dcfce7; border-color: #16a34a; }
+    /* 五、其他 */
+    #target-box { padding: 8px; border: 1px solid #ccc; border-radius: 6px; margin-top: 6px; }
+    #target-box:target { background: #fef08a; }
+    .lang-demo:lang(en) { font-style: italic; }
+
+    /* ===== CSS 选择器演示样式 ===== */
+    /* 一、基础/简单选择器 */
+    .sel-universal * { border: 1px dashed #cbd5e1; padding: 2px; margin: 2px 0; }
+    .sel-type p { color: #16a34a; }
+    .sel-highlight { background: #fef08a; }
+    #sel-only-one { border: 2px solid #dc2626; padding: 6px; border-radius: 6px; }
+    /* 二、组合器 */
+    .sel-descendant li { color: #2563eb; }
+    .sel-child > li { background: #dbeafe; }
+    .sel-adjacent h4 + p { color: #ea580c; font-weight: bold; }
+    .sel-sibling h4 ~ p { text-decoration: underline; }
+    /* 三、属性选择器 */
+    .sel-attr [data-flag] { outline: 2px solid #7c3aed; }
+    .sel-attr [data-role="admin"] { background: #fee2e2; }
+    .sel-attr [data-tags~="vue"] { color: #16a34a; }
+    .sel-attr a[href^="https"]::after { content: " 🔒"; }
+    .sel-attr a[href$=".pdf"]::after { content: " (PDF)"; }
+    .sel-attr [data-note*="重要"] { border-left: 4px solid #dc2626; padding-left: 6px; }
+    .sel-attr [lang|="zh"] { font-style: italic; }
+    /* 四、伪类 */
+    .sel-pc a:hover { background: #2563eb; color: #fff; padding: 0 4px; }
+    .sel-pc li:first-child { color: #dc2626; font-weight: bold; }
+    .sel-pc input:focus { outline: 2px solid #16a34a; }
+    /* 五、伪元素 */
+    .sel-pe p::before { content: "『"; color: #7c3aed; }
+    .sel-pe p::after  { content: "』"; color: #7c3aed; }
+    .sel-pe p::first-letter { font-size: 1.6em; color: #2563eb; }
+    .sel-pe p::first-line { background: #fef9c3; }
+    .sel-pe ::selection { background: #93c5fd; color: #fff; }
+    .sel-pe input::placeholder { color: #dc2626; font-style: italic; }
+    /* 六、分组 & 复合 */
+    .sel-group h3, .sel-group .box, .sel-group > span { border: 1px solid #2563eb; padding: 4px 8px; border-radius: 6px; display: inline-block; margin: 3px; }
+    .sel-compound p.note.active { background: #dcfce7; color: #166534; }
+    /* 七、Vue scoped 模拟 */
+    [data-v-demo] .sel-scoped-p { color: #7c3aed; }
+  </style>
+</head>
+<body>
+
+  <!-- ===================== 左侧目录导航 ===================== -->
+  <nav class="toc">
+    <h2>目录导航</h2>
+
+    <div class="group">一、属性演示</div>
+    <a href="#attr-global">全局属性</a>
+    <a href="#attr-link">链接 / 媒体</a>
+    <a href="#attr-form">表单 / 输入</a>
+    <a href="#attr-table">表格</a>
+    <a href="#attr-struct">结构 / 头部</a>
+
+    <div class="group">二、标签演示</div>
+    <a href="#tag-structure">文档结构</a>
+    <a href="#tag-layout">语义化布局</a>
+    <a href="#tag-text">文本内容</a>
+    <a href="#tag-style">文本样式</a>
+    <a href="#tag-list">列表</a>
+    <a href="#tag-media">链接与媒体</a>
+    <a href="#tag-table">表格</a>
+    <a href="#tag-form">表单</a>
+
+    <div class="group">三、状态（伪类）演示</div>
+    <a href="#state-interact">用户交互状态</a>
+    <a href="#state-structure">结构 / 位置状态</a>
+    <a href="#state-form">表单 / 输入状态</a>
+    <a href="#state-logic">逻辑 / 组合伪类</a>
+    <a href="#state-other">其他状态</a>
+
+    <div class="group">四、CSS 选择器演示</div>
+    <a href="#sel-basic">基础 / 简单选择器</a>
+    <a href="#sel-combinator">组合器</a>
+    <a href="#sel-attr">属性选择器</a>
+    <a href="#sel-pseudo-class">伪类</a>
+    <a href="#sel-pseudo-element">伪元素</a>
+    <a href="#sel-group">分组 &amp; 复合</a>
+    <a href="#sel-scoped">Vue scoped 原理</a>
+
+    <div class="group">参考文档</div>
+    <a href="属性速查.md">属性速查 .md</a>
+    <a href="标签速查.md">标签速查 .md</a>
+    <a href="状态速查.md">状态速查 .md</a>
+    <a href="test01.html">test01 原文件</a>
+    <a href="test02.html">test02 原文件</a>
+    <a href="test03.html">test03 原文件</a>
+    <a href="test04.html">test04 原文件</a>
+    <a href="CSS选择器速查.md">CSS选择器速查 .md</a>
+  </nav>
+
+  <!-- ===================== 右侧内容 ===================== -->
+  <main>
+
+    <h1 style="border:none;margin-bottom:20px;">HTML 标签 &amp; 属性总览</h1>
+    <p class="note">左侧目录可点击跳转。本页整合自 <code>test01.html</code>（属性）与 <code>test02.html</code>（标签）。详情见 <code>属性速查.md</code> / <code>标签速查.md</code>。</p>
+
+    <!-- ============== 属性演示 ============== -->
+    <section id="attr-global">
+      <h1>全局属性</h1>
+      <div class="box">
+        <h3>集中演示：class / id / style / title / hidden / tabindex / draggable / contenteditable / spellcheck / translate / accesskey / data-* / role / aria-* / itemscope</h3>
+        <div class="demo-box"
+             id="mainBox" style="padding:12px;border:1px solid #ccc;"
+             title="悬停提示" tabindex="0" accesskey="b"
+             draggable="true" contenteditable="true" spellcheck="false"
+             translate="no" role="region"
+             aria-label="演示区" aria-hidden="false" aria-expanded="true"
+             data-id="123" itemscope itemprop="WebPage">
+          这段文字可直接编辑（contenteditable），按 Alt+B 聚焦（accesskey）。删掉 hidden 才可见。
+        </div>
+        <p class="note">html 标签上还有 <code>lang</code> / <code>dir</code> 等全局属性。</p>
+      </div>
+    </section>
+
+    <section id="attr-link">
+      <h1>链接 / 媒体属性</h1>
+      <div class="box">
+        <h3>href / target / rel / download / src / alt / width / height / loading / controls / autoplay / muted / poster / loop</h3>
+        <a href="https://example.com" target="_blank" rel="noopener">新标签页打开</a>
+        <a href="file.pdf" download="文档.pdf">下载文件</a><br>
+        <img src="logo.png" alt="Logo" width="120" height="40" loading="lazy"><br>
+        <video src="m.mp4" controls autoplay muted loop poster="cover.jpg" width="160"></video>
+        <audio src="s.mp3" controls></audio>
+      </div>
+    </section>
+
+    <section id="attr-form">
+      <h1>表单 / 输入属性</h1>
+      <div class="box">
+        <h3>type / name / value / placeholder / required / disabled / readonly / checked / selected / maxlength / minlength / min / max / step / pattern / autocomplete / for / multiple / accept</h3>
+        <form>
+          <label for="u">label(for 绑定): </label>
+          <input id="u" type="text" name="u" placeholder="用户名" required maxlength="20" minlength="3" autocomplete="off"><br>
+          <input type="email" placeholder="邮箱" pattern=".+@.+\..+"><br>
+          <input type="number" min="0" max="120" step="1" placeholder="年龄"><br>
+          <input type="password" value="123" readonly><br>
+          <input type="checkbox" checked> 已选 <input type="file" multiple accept="image/*"><br>
+          <select><option selected>默认项</option><option>其他</option></select><br>
+          <button type="submit">提交</button> <button type="button" disabled>禁用</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="attr-table">
+      <h1>表格属性</h1>
+      <div class="box">
+        <h3>colspan / rowspan / scope / border / cellpadding / cellspacing</h3>
+        <table border="1" cellpadding="6" cellspacing="0">
+          <thead><tr><th scope="col">姓名</th><th scope="col">成绩</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="2">张三</td><td>90</td></tr>
+            <tr><td colspan="2">跨两列</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="attr-struct">
+      <h1>结构 / 头部属性</h1>
+      <div class="box">
+        <h3>charset / name=viewport / sandbox / defer / async（script）/ href &amp; rel（link）</h3>
+        <p class="note">以下属性位于 head / iframe，此处以代码示意：</p>
+        <code>&lt;meta charset="UTF-8"&gt;</code><br>
+        <code>&lt;meta name="viewport" content="width=device-width"&gt;</code><br>
+        <code>&lt;link rel="stylesheet" href="style.css"&gt;</code><br>
+        <code>&lt;script src="app.js" defer&gt;&lt;/script&gt;</code><br>
+        <code>&lt;script src="a.js" async&gt;&lt;/script&gt;</code><br>
+        <code>&lt;iframe src="x.html" sandbox="allow-scripts"&gt;&lt;/iframe&gt;</code><br>
+        <iframe src="https://example.com" sandbox="allow-scripts" width="160" height="80"></iframe>
+      </div>
+    </section>
+
+    <!-- ============== 标签演示 ============== -->
+    <section id="tag-structure">
+      <h1>文档结构标签</h1>
+      <div class="box">
+        <h3>html / head / body / title / meta / link / style / script / base / noscript</h3>
+        <p>结构类标签见本文件自身；<code>&lt;base href="..."&gt;</code> 设相对链接基准；<noscript>禁用JS时显示</noscript></p>
+      </div>
+    </section>
+
+    <section id="tag-layout">
+      <h1>语义化布局标签</h1>
+      <div class="box">
+        <header><h3>header 页头</h3></header>
+        <nav>nav 导航：<a href="#attr-global">跳到全局属性</a></nav>
+        <main style="margin:0;"><p>main 主体（演示页内仅示意）</p></main>
+        <aside>aside 侧边栏</aside>
+        <section>section 分区</section>
+        <article>article 独立文章</article>
+        <figure>图 <img src="p.png" alt="x" width="40"><figcaption>figcaption 说明</figcaption></figure>
+        <details open><summary>details+summary 可展开</summary><p>内容</p></details>
+        <dialog open><p>dialog 弹窗</p></dialog>
+        <address>address 联系方式</address>
+        <hgroup><h1>主</h1><h2>副</h2></hgroup>
+        <footer>footer 页脚</footer>
+      </div>
+    </section>
+
+    <section id="tag-text">
+      <h1>文本内容标签</h1>
+      <div class="box">
+        <h3>h1~h6 / p / div / span / br / hr / pre / blockquote / q / cite / code / kbd / samp / var / abbr / time / mark / small / sub / sup / data / ruby / wbr</h3>
+        <h1>h1</h1><h2>h2</h2><h3>h3</h3>
+        <p>p 段落，<span>span 行内</span>，<div>div 块级</div></p>
+        <br><hr>
+        <pre>pre 原格式
+  保留缩进</pre>
+        <blockquote>blockquote</blockquote> <q>q</q> <cite>cite</cite>
+        <code>code</code> <kbd>kbd</kbd> <samp>samp</samp> <var>var</var>
+        <abbr title="HTML">abbr</abbr> <time datetime="2026-07-22">time</time>
+        <mark>mark</mark> <small>small</small> 水<sub>sub</sub> 平方<sup>sup</sup>
+        <data value="1">data</data> <ruby>汉<rt>hàn</rt></ruby> <wbr>换行点
+      </div>
+    </section>
+
+    <section id="tag-style">
+      <h1>文本样式标签</h1>
+      <div class="box">
+        <h3>strong / em / b / i / u / s / del / ins</h3>
+        <strong>strong</strong> <em>em</em> <b>b</b> <i>i</i> <u>u</u> <s>s</s> <del>del</del> <ins>ins</ins>
+      </div>
+    </section>
+
+    <section id="tag-list">
+      <h1>列表标签</h1>
+      <div class="box">
+        <h3>ul / ol / li / dl / dt / dd</h3>
+        <ul><li>ul 项</li></ul>
+        <ol><li>ol 项</li></ol>
+        <dl><dt>dt 术语</dt><dd>dd 解释</dd></dl>
+      </div>
+    </section>
+
+    <section id="tag-media">
+      <h1>链接与媒体标签</h1>
+      <div class="box">
+        <h3>a / img / picture / source / video / audio / iframe / map / area / canvas / svg</h3>
+        <a href="#">a 链接</a>
+        <img src="i.png" alt="图" width="40">
+        <picture><source srcset="b.png" media="(min-width:600px)"><img src="s.png" alt="响应式" width="40"></picture>
+        <video src="v.mp4" controls width="80"></video>
+        <audio src="a.mp3" controls></audio>
+        <iframe src="https://example.com" width="120" height="60"></iframe>
+        <canvas width="50" height="30" style="border:1px solid #000;"></canvas>
+        <svg width="30" height="30"><circle cx="15" cy="15" r="13" fill="red"/></svg>
+        <img src="m.png" alt="热点" width="40" usemap="#mp">
+        <map name="mp"><area shape="rect" coords="0,0,20,20" href="#" alt="区"></map>
+      </div>
+    </section>
+
+    <section id="tag-table">
+      <h1>表格标签</h1>
+      <div class="box">
+        <h3>table / caption / colgroup / col / thead / tbody / tfoot / tr / th / td</h3>
+        <table border="1" cellpadding="4">
+          <caption>caption 标题</caption>
+          <colgroup><col style="background:#eee"></colgroup>
+          <thead><tr><th>头部</th></tr></thead>
+          <tbody><tr><td>单元格</td></tr></tbody>
+          <tfoot><tr><td>tfoot 合计</td></tr></tfoot>
+        </table>
+      </div>
+    </section>
+
+    <section id="tag-form">
+      <h1>表单标签</h1>
+      <div class="box">
+        <h3>form / input / textarea / button / select / option / optgroup / label / fieldset / legend / datalist / output / progress / meter</h3>
+        <form>
+          <fieldset>
+            <legend>fieldset + legend</legend>
+            <label>label: <input type="text" placeholder="输入"></label><br>
+            <textarea placeholder="多行"></textarea><br>
+            <button type="submit">button</button><br>
+            <select><optgroup label="组"><option>option</option></optgroup></select><br>
+            <input list="dl" placeholder="datalist"><datalist id="dl"><option value="A"></datalist><br>
+            <output>output</output><br>
+            <progress value="60" max="100">progress</progress><br>
+            <meter value="0.6">meter</meter>
+          </fieldset>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============== 状态（伪类）演示 ============== -->
+    <section id="state-interact">
+      <h1>用户交互状态</h1>
+      <div class="box">
+        <h3>:link / :visited / :hover / :active / :focus / :focus-within / :focus-visible</h3>
+        <p class="note">悬停、点击、聚焦下面元素，观察变化。</p>
+        <a class="demo-link" href="https://example.com" target="_blank">链接四态(LVHA)</a><br>
+        <button class="state-btn">悬停/按下/聚焦我</button>
+        <span class="fw-box">focus-within：<input class="s-input" placeholder="聚焦我整框高亮"></span>
+      </div>
+    </section>
+
+    <section id="state-structure">
+      <h1>结构 / 位置状态</h1>
+      <div class="box">
+        <h3>:first-child / :last-child / :nth-child() / :only-child / :empty / :root</h3>
+        <ul class="struct-list">
+          <li>第一个(:first-child 红)</li>
+          <li>第二个(:nth-child(2n) 灰底)</li>
+          <li>第三个</li>
+          <li>最后一个(:last-child 绿)</li>
+        </ul>
+        <p class="note">斑马纹表格 tr:nth-child ↓</p>
+        <table class="zebra"><tr><td>行1</td></tr><tr><td>行2</td></tr><tr><td>行3</td></tr><tr><td>行4</td></tr></table>
+        <p class="note">空元素 :empty ↓</p>
+        <div class="empty-demo"></div>
+      </div>
+    </section>
+
+    <section id="state-form">
+      <h1>表单 / 输入状态</h1>
+      <div class="box">
+        <h3>:enabled / :disabled / :checked / :required / :optional / :valid / :invalid / :read-only / :placeholder-shown / :in-range / :out-of-range</h3>
+        <form class="state-form">
+          <div>必填+校验：<input type="email" required placeholder="邮箱"></div>
+          <div>禁用：<input type="text" value="禁用" disabled></div>
+          <div>只读：<input type="text" value="只读" readonly></div>
+          <div>数字范围0-10：<input type="number" min="0" max="10" value="5"></div>
+          <label class="chk-label"><input type="checkbox"> <span>勾选变绿(:checked)</span></label>
+        </form>
+      </div>
+    </section>
+
+    <section id="state-logic">
+      <h1>逻辑 / 组合伪类</h1>
+      <div class="box">
+        <h3>:not() / :is() / :where() / :has()</h3>
+        <ul class="logic-list">
+          <li>普通项(:not(.special) 灰)</li>
+          <li class="special">special 项(红)</li>
+          <li>普通项</li>
+        </ul>
+        <div class="has-demo">:has 父选子——勾选整块变绿：<input type="checkbox"></div>
+      </div>
+    </section>
+
+    <section id="state-other">
+      <h1>其他状态</h1>
+      <div class="box">
+        <h3>:target / :lang()（:fullscreen / :playing 需实际触发）</h3>
+        <a href="#target-box">点我跳转并高亮 :target 目标</a>
+        <div id="target-box">我是 :target 目标，被锚点指向时变黄。</div>
+        <p class="lang-demo" lang="en">This is lang="en" → :lang(en) italic.</p>
+      </div>
+    </section>
+
+    <!-- ============== CSS 选择器演示 ============== -->
+    <section id="sel-basic">
+      <h1>基础 / 简单选择器</h1>
+      <div class="box">
+        <h3>* 通配符 / div 类型 / .class 类 / #id ID</h3>
+        <div class="sel-universal">通配符 *（区域内元素全加虚线）：<p>段落</p><span>行内</span></div>
+        <div class="sel-type">类型选择器 p 变绿：<p>我是 p（绿）</p><span>span（不变）</span></div>
+        <p><span class="sel-highlight">带 .highlight 类 → 黄底</span> <span>无类 → 不变</span></p>
+        <div id="sel-only-one">我是唯一 id，红框（#sel-only-one）</div>
+      </div>
+    </section>
+
+    <section id="sel-combinator">
+      <h1>组合器（元素关系）</h1>
+      <div class="box">
+        <h3>A B 后代 / A &gt; B 子代 / A + B 相邻兄弟 / A ~ B 通用兄弟</h3>
+        <div class="sel-descendant">后代 li（含嵌套全蓝）：<ul><li>一层<li><ul><li>二层也蓝</li></ul></li></ul></div>
+        <div class="sel-child">子代 &gt; li（仅直接子蓝底）：<ul><li>直接子<li><ul><li>嵌套不变</li></ul></li></ul></div>
+        <div class="sel-adjacent">相邻兄弟 h4 + p（橙）：<h4>h4</h4><p>紧跟的 p（橙）</p><p>隔开的 p（不变）</p></div>
+        <div class="sel-sibling">通用兄弟 h4 ~ p（下划线）：<h4>h4</h4><p>之后 p1</p><p>之后 p2</p></div>
+      </div>
+    </section>
+
+    <section id="sel-attr">
+      <h1>属性选择器</h1>
+      <div class="box sel-attr">
+        <h3>[attr] / [=] / [~=] / [^=] / [$=] / [*=] / [|=]</h3>
+        <p><span data-flag="1">[data-flag] 紫框</span> <span>无（不变）</span></p>
+        <p><span data-role="admin">[data-role="admin"] 红底</span> <span data-role="user">user（不变）</span></p>
+        <p><span data-tags="vue js">[data-tags~="vue"] 绿</span> <span data-tags="react">react（不变）</span></p>
+        <p><a href="https://example.com">https 链接 🔒</a> · <a href="doc.pdf">doc.pdf (PDF)</a> · <a href="page.html">page.html（无后缀）</a></p>
+        <p><span data-note="这是重要内容">[data-note*="重要"] 红左边框</span> <span data-note="普通">普通（不变）</span></p>
+        <p><span lang="zh-CN">[lang|="zh"] 斜体</span> <span lang="en">en（不变）</span></p>
+      </div>
+    </section>
+
+    <section id="sel-pseudo-class">
+      <h1>伪类（状态，单冒号 :）</h1>
+      <div class="box sel-pc">
+        <h3>:hover / :first-child / :focus（完整见 状态速查.md）</h3>
+        <p><a href="#sel-basic">悬停我变蓝底白字</a></p>
+        <ul><li>第一个（红+粗）</li><li>第二个</li><li>第三个</li></ul>
+        <p><input type="text" placeholder="点我聚焦→绿框"></p>
+      </div>
+    </section>
+
+    <section id="sel-pseudo-element">
+      <h1>伪元素（元素部件，双冒号 ::）</h1>
+      <div class="box sel-pe">
+        <h3>::before / ::after / ::first-letter / ::first-line / ::selection / ::placeholder</h3>
+        <p>这段文字：首字放大变蓝、首行黄底、两侧加『』引号；拖选文字看 ::selection 高亮。</p>
+        <p>第二段同样效果，证明是样式规则而非真实 DOM 节点。</p>
+        <p><input type="text" placeholder="占位符为红色斜体（::placeholder）"></p>
+      </div>
+    </section>
+
+    <section id="sel-group">
+      <h1>分组 &amp; 复合选择器</h1>
+      <div class="box">
+        <h3>A, B 分组 / tag.class 复合</h3>
+        <div class="sel-group"><h3>标题</h3><div class="box">box</div><span>span</span>（三者同款蓝边框）</div>
+        <div class="sel-compound"><p class="note active">p.note.active 三个都满足（绿底）</p><p class="note">仅 note（不变）</p><p class="active">仅 active（不变）</p></div>
+      </div>
+    </section>
+
+    <section id="sel-scoped">
+      <h1>Vue scoped 原理（概念示意）</h1>
+      <div class="box">
+        <h3>[data-v-xxx] 属性选择器 + 编译期自动加属性</h3>
+        <div data-v-demo><p class="sel-scoped-p">我在 data-v-demo 容器内（紫）→ 模拟 scoped 命中</p></div>
+        <p class="sel-scoped-p">我在容器外（不变，证明 scoped 隔离）</p>
+        <p class="note">.vue 里写 <code>&lt;style scoped&gt;</code>，编译后变成 <code>.sel-scoped-p[data-v-7a9e1f]</code>，并给组件元素自动加 <code>data-v-7a9e1f</code>，实现样式只作用于本组件。本质是「属性选择器 + 编译期加属性」，class 只是选择器之一。</p>
+      </div>
+    </section>
+
+  </main>
+</body>
+</html>

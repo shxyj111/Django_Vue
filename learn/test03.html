@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS 状态（伪类）演示 test03</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: "Microsoft YaHei", sans-serif; line-height: 1.7; padding: 20px; max-width: 900px; margin: 0 auto; color: #222; }
+    h1 { border-left: 4px solid #2563eb; padding-left: 10px; }
+    section { border: 1px solid #ddd; border-radius: 8px; padding: 14px 18px; margin: 18px 0; }
+    section > h2 { font-size: 18px; color: #1d4ed8; margin-bottom: 6px; }
+    .note { color: #666; font-size: 13px; margin-bottom: 10px; }
+    .demo { padding: 8px 0; }
+    code { background: #f3f4f6; padding: 1px 5px; border-radius: 3px; font-size: 13px; }
+
+    /* ============ 一、用户交互状态 ============ */
+    /* LVHA 顺序：link → visited → hover → active */
+    a.demo-link:link    { color: #2563eb; }              /* 未访问 */
+    a.demo-link:visited { color: #7c3aed; }              /* 已访问 */
+    a.demo-link:hover   { color: #dc2626; text-decoration: underline; } /* 悬停 */
+    a.demo-link:active  { color: #ea580c; }              /* 按下瞬间 */
+
+    .btn { padding: 6px 16px; border: 1px solid #2563eb; background: #eff6ff; border-radius: 5px; cursor: pointer; }
+    .btn:hover   { background: #2563eb; color: #fff; }    /* 悬停 */
+    .btn:active  { transform: scale(.95); }              /* 按下 */
+    .btn:focus   { outline: 3px solid #93c5fd; }         /* 键盘聚焦 */
+
+    .fw-input { padding: 6px 10px; border: 1px solid #ccc; border-radius: 5px; }
+    .fw-box:focus-within { box-shadow: 0 0 0 3px #bfdbfe; border-color: #2563eb; } /* 子元素聚焦时整组高亮 */
+    .fv-btn:focus-visible { outline: 3px solid #f59e0b; } /* 仅键盘导航时显示焦点框 */
+
+    /* ============ 二、结构 / 位置状态 ============ */
+    .struct-list li:first-child { color: #dc2626; font-weight: bold; } /* 第一个 */
+    .struct-list li:last-child  { color: #16a34a; font-weight: bold; } /* 最后一个 */
+    .struct-list li:nth-child(2n)   { background: #f3f4f6; }          /* 偶数行 */
+    .struct-list li:nth-child(2n+1) { background: #fff; }             /* 奇数行 */
+    .struct-list li:only-child { color: purple; }                    /* 唯一子元素 */
+    .empty-demo:empty { border: 2px dashed #dc2626; min-height: 24px; } /* 空元素 */
+    .empty-demo:empty::after { content: '（我是空的:empty）'; color:#dc2626; font-size:12px; }
+
+    /* 斑马纹表格：nth-child */
+    .zebra { border-collapse: collapse; width: 100%; }
+    .zebra td { border: 1px solid #ddd; padding: 6px 10px; }
+    .zebra tr:nth-child(odd)  { background: #f9fafb; }   /* 奇数行 */
+    .zebra tr:nth-child(even) { background: #eef2ff; }   /* 偶数行 */
+
+    /* ============ 三、表单 / 输入状态 ============ */
+    .form-demo input:enabled   { border: 1px solid #16a34a; }  /* 可用 */
+    .form-demo input:disabled  { background: #f3f4f6; color: #999; } /* 禁用 */
+    .form-demo input:required  { border-left: 4px solid #dc2626; }   /* 必填 */
+    .form-demo input:optional  { border-left: 4px solid #9ca3af; }   /* 非必填 */
+    .form-demo input:valid     { outline: 2px solid #16a34a; }       /* 校验通过 */
+    .form-demo input:invalid   { outline: 2px solid #dc2626; }       /* 校验失败 */
+    .form-demo input:read-only { background: #fef9c3; }              /* 只读 */
+    .form-demo input:placeholder-shown { font-style: italic; color: #9ca3af; } /* 正在显示占位符 */
+    .form-demo input:in-range  { box-shadow: inset 0 0 0 2px #16a34a; } /* 在范围内 */
+    .form-demo input:out-of-range { box-shadow: inset 0 0 0 2px #dc2626; } /* 超范围 */
+    .chk-label input:checked + span { color: #16a34a; font-weight: bold; } /* 选中 */
+
+    /* ============ 四、逻辑 / 组合伪类 ============ */
+    .logic-list li:not(.special) { color: #6b7280; }     /* 非 special */
+    .logic-list li.special { color: #dc2626; font-weight: bold; }
+    .is-demo :is(h4, p) { margin: 4px 0; color: #1d4ed8; } /* h4 或 p */
+    /* :has 父选子（现代浏览器支持） */
+    .has-demo:has(input:checked) { background: #dcfce7; border-color: #16a34a; }
+
+    /* ============ 五、其他状态 ============ */
+    :target { background: #fef08a; }                     /* URL 锚点目标高亮 */
+    .lang-demo:lang(en) { font-style: italic; }          /* 语言匹配 */
+  </style>
+</head>
+<body>
+
+  <h1>CSS 状态（伪类）全演示 · test03</h1>
+  <p class="note">把鼠标移上去、点一点、输入内容、勾选框，实时观察每种「状态」触发的样式变化。</p>
+
+  <!-- ============ 一、用户交互状态 ============ -->
+  <section>
+    <h2>一、用户交互状态</h2>
+    <p class="note"><code>:link</code> <code>:visited</code> <code>:hover</code> <code>:active</code> <code>:focus</code> <code>:focus-within</code> <code>:focus-visible</code></p>
+    <div class="demo">
+      链接四态(LVHA)：<a class="demo-link" href="https://example.com" target="_blank">点我看链接颜色变化</a>
+    </div>
+    <div class="demo">
+      按钮：<button class="btn">悬停/按下/聚焦我</button>
+    </div>
+    <div class="demo fw-box" style="border:1px solid #ccc;padding:8px;border-radius:6px;display:inline-block;">
+      focus-within 容器：<input class="fw-input" placeholder="聚焦我，整个框高亮">
+    </div>
+    <div class="demo">
+      <button class="fv-btn btn">focus-visible（用 Tab 键聚焦才有黄框）</button>
+    </div>
+  </section>
+
+  <!-- ============ 二、结构 / 位置状态 ============ -->
+  <section>
+    <h2>二、结构 / 位置状态</h2>
+    <p class="note"><code>:first-child</code> <code>:last-child</code> <code>:nth-child()</code> <code>:only-child</code> <code>:empty</code> <code>:root</code></p>
+    <ul class="struct-list">
+      <li>第一个（:first-child 红色）</li>
+      <li>第二个（:nth-child(2n) 灰底）</li>
+      <li>第三个</li>
+      <li>第四个（:nth-child(2n) 灰底）</li>
+      <li>最后一个（:last-child 绿色）</li>
+    </ul>
+    <p class="note">空元素 :empty ↓</p>
+    <div class="empty-demo"></div>
+    <p class="note">斑马纹表格（tr:nth-child odd/even）↓</p>
+    <table class="zebra">
+      <tr><td>行1</td><td>数据</td></tr>
+      <tr><td>行2</td><td>数据</td></tr>
+      <tr><td>行3</td><td>数据</td></tr>
+      <tr><td>行4</td><td>数据</td></tr>
+    </table>
+  </section>
+
+  <!-- ============ 三、表单 / 输入状态 ============ -->
+  <section>
+    <h2>三、表单 / 输入状态</h2>
+    <p class="note"><code>:enabled</code> <code>:disabled</code> <code>:checked</code> <code>:required</code> <code>:optional</code> <code>:valid</code> <code>:invalid</code> <code>:read-only</code> <code>:placeholder-shown</code> <code>:in-range</code> <code>:out-of-range</code></p>
+    <form class="form-demo">
+      <div class="demo">可用+必填+校验：<input type="email" required placeholder="输入邮箱(必填/校验)"></div>
+      <div class="demo">非必填：<input type="text" placeholder="选填"></div>
+      <div class="demo">禁用：<input type="text" value="禁用中" disabled></div>
+      <div class="demo">只读：<input type="text" value="只读内容" readonly></div>
+      <div class="demo">数字范围 0-10（:in-range/:out-of-range）：<input type="number" min="0" max="10" value="5"></div>
+      <div class="demo">
+        <label class="chk-label"><input type="checkbox"> <span>勾选我(:checked 变绿)</span></label>
+      </div>
+    </form>
+  </section>
+
+  <!-- ============ 四、逻辑 / 组合伪类 ============ -->
+  <section>
+    <h2>四、逻辑 / 组合伪类</h2>
+    <p class="note"><code>:not()</code> <code>:is()</code> <code>:where()</code> <code>:has()</code></p>
+    <ul class="logic-list">
+      <li>普通项(:not(.special) 灰)</li>
+      <li class="special">special 项(红)</li>
+      <li>普通项</li>
+    </ul>
+    <div class="is-demo">
+      <h4>:is(h4, p) 命中的标题</h4>
+      <p>:is(h4, p) 命中的段落</p>
+    </div>
+    <div class="has-demo" style="border:1px solid #ccc;padding:8px;border-radius:6px;">
+      :has 父选子 —— 勾选后整块变绿：<input type="checkbox">
+    </div>
+  </section>
+
+  <!-- ============ 五、其他状态 ============ -->
+  <section>
+    <h2>五、其他状态</h2>
+    <p class="note"><code>:target</code> <code>:lang()</code>（<code>:fullscreen</code>/<code>:playing</code> 需实际全屏/播放触发）</p>
+    <div class="demo">
+      <a href="#target-box">点我跳转并高亮下面的 :target 目标</a>
+    </div>
+    <div id="target-box" style="padding:8px;border:1px solid #ccc;border-radius:6px;">
+      我是 :target 目标，被锚点指向时会变黄。
+    </div>
+    <p class="lang-demo" lang="en">This paragraph is lang="en" → :lang(en) makes it italic.</p>
+  </section>
+
+</body>
+</html>

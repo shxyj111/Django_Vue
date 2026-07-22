@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<!-- lang: 文档语言；dir: 文字方向(ltr 左到右) —— 全局属性 -->
+<html lang="zh-CN" dir="ltr">
+
+<head>
+  <!-- charset: 字符编码；name="viewport": 移动端视口；title: 浏览器标签页标题 -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>属性大全演示 test01</title>
+
+  <!-- link 的 href: 外部资源地址；rel: 关系(引入样式表) -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- script 的 src: 外部JS路径；defer: 延迟到DOM解析完再执行；async: 异步加载不阻塞 -->
+  <script src="app.js" defer></script>
+  <script src="analytics.js" async></script>
+</head>
+
+<!-- body 上演示大量全局属性 -->
+<body
+  itemscope                      <!-- itemscope: 微数据作用域，配合 itemprop 标注结构化数据(SEO) -->
+  itemprop="WebPage"            <!-- itemprop: 给元素标注业务字段名 -->
+>
+
+  <!-- ========== 全局属性集中演示 ========== -->
+  <!-- class: CSS类名; id: 唯一ID; style: 行内样式; title: 悬停提示; -->
+  <!-- hidden: 隐藏元素; tabindex: Tab键聚焦顺序; accesskey: 键盘快捷键; -->
+  <!-- draggable: 可拖拽; contenteditable: 可直接编辑; spellcheck: 拼写检查; -->
+  <!-- translate: 是否允许翻译; role: 无障碍角色; -->
+  <!-- aria-label/aria-hidden/aria-expanded: 无障碍状态描述; -->
+  <!-- data-id: 自定义数据属性(JS用 dataset 读取) -->
+  <div
+    class="demo-box"
+    id="mainBox"
+    style="padding: 12px; border: 1px solid #ccc;"
+    title="这是一个演示盒子"
+    hidden
+    tabindex="0"
+    accesskey="b"
+    draggable="true"
+    contenteditable="true"
+    spellcheck="false"
+    translate="no"
+    role="region"
+    aria-label="演示区域"
+    aria-hidden="false"
+    aria-expanded="true"
+    data-id="123"
+    data-status="active"
+  >
+    这段文字可以直接编辑（contenteditable），按 Alt+B 可聚焦（accesskey）。
+  </div>
+
+  <!-- span: 行内容器，包一小段文字加样式 -->
+  <p>这是一段普通文字，其中 <span class="hl" style="color:red;">这一截被高亮</span> 了。</p>
+
+  <!-- ========== 语义化结构标签 ========== -->
+  <header>
+    <h1>这是一级标题（h1）</h1>
+  </header>
+
+  <!-- nav: 导航区 -->
+  <nav>
+    <!-- a 标签: href 链接地址; target 打开方式; rel 关系; download 提示下载 -->
+    <a href="https://example.com" target="_blank" rel="noopener">新标签页打开</a>
+    <a href="file.pdf" download="说明文档.pdf">下载文件</a>
+  </nav>
+
+  <!-- ========== 图片 / 媒体 ========== -->
+  <!-- img: src 图片地址; alt 替代文本(读屏/加载失败显示); width/height 尺寸; loading 懒加载 -->
+  <img src="logo.png" alt="网站Logo" width="120" height="40" loading="lazy">
+
+  <!-- video: src 地址; controls 显示控件; autoplay 自动播放; muted 静音; loop 循环; poster 封面 -->
+  <video src="movie.mp4" controls autoplay muted loop poster="cover.jpg"></video>
+
+  <!-- audio 同理 -->
+  <audio src="song.mp3" controls autoplay loop></audio>
+
+  <!-- ========== 表单 / 输入 ========== -->
+  <form action="/submit" method="post">
+    <!-- label 的 for: 绑定输入框 id，点文字即可聚焦 -->
+    <label for="username">用户名：</label>
+    <!-- input: type 类型; name 字段名; value 默认值; placeholder 灰字提示; -->
+    <!-- required 必填; maxlength 最大长度; minlength 最小长度; autocomplete 自动填充 -->
+    <input
+      type="text"
+      id="username"
+      name="username"
+      value=""
+      placeholder="请输入用户名"
+      required
+      maxlength="20"
+      minlength="3"
+      autocomplete="off"
+    >
+
+    <!-- type=email 邮箱; pattern 正则校验 -->
+    <label for="email">邮箱：</label>
+    <input type="email" id="email" name="email" placeholder="a@b.com" pattern=".+@.+\..+">
+
+    <!-- type=number: min/max/step 范围与步长 -->
+    <label for="age">年龄：</label>
+    <input type="number" id="age" name="age" min="0" max="120" step="1">
+
+    <!-- type=password 密码; readonly 只读 -->
+    <label for="pwd">密码：</label>
+    <input type="password" id="pwd" name="pwd" value="123456" readonly>
+
+    <!-- type=checkbox: checked 默认选中 -->
+    <input type="checkbox" id="agree" name="agree" checked>
+    <label for="agree">我已阅读协议</label>
+
+    <!-- type=radio 单选 -->
+    <input type="radio" id="male" name="sex" value="male"><label for="male">男</label>
+    <input type="radio" id="female" name="sex" value="female"><label for="female">女</label>
+
+    <!-- type=file: multiple 多选; accept 限制类型 -->
+    <input type="file" name="upload" multiple accept="image/*">
+
+    <!-- textarea 多行文本 -->
+    <textarea name="remark" placeholder="备注"></textarea>
+
+    <!-- select 下拉框; option 的 selected 默认选中 -->
+    <select name="city">
+      <option value="bj" selected>北京</option>
+      <option value="sh">上海</option>
+    </select>
+
+    <!-- button: type 类型(submit 提交/button 普通/reset 重置); disabled 禁用 -->
+    <button type="submit">提交</button>
+    <button type="button" disabled>不可点的按钮</button>
+    <button type="reset">重置</button>
+  </form>
+
+  <!-- ========== 表格 ========== -->
+  <!-- table: border 边框; cellpadding 内边距; cellspacing 间距(旧属性, 现多用CSS) -->
+  <table border="1" cellpadding="6" cellspacing="0">
+    <!-- thead: 表头区 -->
+    <thead>
+      <!-- tr: 行; th: 表头单元格; scope 声明是列头(col) -->
+      <tr>
+        <th scope="col">姓名</th>
+        <th scope="col">成绩</th>
+        <th scope="col">备注</th>
+      </tr>
+    </thead>
+    <!-- tbody: 表体区 -->
+    <tbody>
+      <tr>
+        <!-- td: 普通单元格; rowspan 纵向跨两行 -->
+        <td rowspan="2">张三</td>
+        <td>90</td>
+        <!-- colspan: 横向跨两列 -->
+        <td colspan="2">优秀</td>
+      </tr>
+      <tr>
+        <td>88</td>
+        <td>良好</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ========== 侧边栏 / 主体 ========== -->
+  <!-- aside: 侧边栏; main: 页面主体(应唯一) -->
+  <aside>
+    <p>这是侧边栏内容</p>
+  </aside>
+  <main>
+    <p>这是页面主体内容</p>
+  </main>
+
+  <!-- ========== 内嵌框架 ========== -->
+  <!-- iframe: src 嵌套地址; sandbox 安全限制 -->
+  <iframe src="https://example.com" sandbox="allow-scripts"></iframe>
+
+</body>
+</html>

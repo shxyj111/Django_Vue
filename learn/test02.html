@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<!-- ================= 一、文档结构类 ================= -->
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <!-- title: 标签页标题 -->
+  <title>所有 HTML 标签演示 test02</title>
+  <!-- meta: 视口配置 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- link: 引入外部样式 -->
+  <link rel="stylesheet" href="style.css">
+  <!-- style: 页面内嵌样式 -->
+  <style> body { font-family: sans-serif; line-height: 1.6; } .box { border:1px solid #ccc; padding:8px; margin:6px 0; } </style>
+  <!-- base: 相对链接基准地址 -->
+  <base href="https://example.com/">
+  <!-- script: 内嵌 JS -->
+  <script> console.log('页面加载了'); </script>
+</head>
+<body>
+  <!-- noscript: 浏览器禁用 JS 时显示 -->
+  <noscript>请开启 JavaScript 以获得完整体验</noscript>
+
+  <!-- ================= 二、语义化布局类 ================= -->
+  <header class="box"><h2>header 页头</h2></header>
+
+  <nav class="box">
+    <h2>nav 导航</h2>
+    <a href="#main">跳到主体</a>
+  </nav>
+
+  <main id="main" class="box">
+    <h2>main 主体（页面唯一）</h2>
+
+    <section class="box">
+      <h3>section 内容分区</h3>
+      <article>
+        <h4>article 独立文章</h4>
+        <p>这是一篇可独立存在的内容。</p>
+      </article>
+    </section>
+
+    <aside class="box"><p>aside 侧边栏/附属内容</p></aside>
+
+    <figure class="box">
+      <img src="pic.png" alt="示意图" width="100">
+      <figcaption>figcaption 图片说明文字</figcaption>
+    </figure>
+
+    <details class="box" open>
+      <summary>details + summary 可展开详情（点我）</summary>
+      <p>展开后看到的内容。</p>
+    </details>
+
+    <dialog class="box" open>
+      <p>dialog 对话框内容</p>
+    </dialog>
+
+    <address class="box">address 联系方式：xxx@example.com</address>
+
+    <hgroup><h1>主标题</h1><h2>副标题</h2></hgroup>
+  </main>
+
+  <footer class="box"><p>footer 页脚</p></footer>
+
+  <!-- ================= 三、文本内容类 ================= -->
+  <div class="box">
+    <h2>三、文本内容</h2>
+    <h1>h1 一级标题</h1><h2>h2</h2><h3>h3</h3><h4>h4</h4><h5>h5</h5><h6>h6</h6>
+    <p>p 段落文字。<span>span 行内容器</span> 穿插其中。</p>
+    <br>            <!-- br 换行 -->
+    <hr>            <!-- hr 分割线 -->
+    <pre>pre 保留
+    原格式（空格换行都在）</pre>
+    <blockquote>blockquote 大段引用</blockquote>
+    <q>q 短引用</q>
+    <cite>cite 作品名</cite>
+    <code>code 代码</code>
+    <kbd>kbd 按键 Ctrl+C</kbd>
+    <samp>samp 程序输出</samp>
+    <var>var 变量 x</var>
+    <abbr title="HyperText Markup Language">abbr 缩写 HTML</abbr>
+    <time datetime="2026-07-22">time 2026-07-22</time>
+    <mark>mark 高亮</mark>
+    <small>small 小字附注</small>
+    水<sub>sub 下标</sub> 平方<sup>sup 上标</sup>
+    <data value="123">data 关联值 123</data>
+    <ruby>汉<rt>hàn</rt></ruby>  <!-- ruby 注音 -->
+    <wbr>很长的英文单词中可换行点
+  </div>
+
+  <!-- ================= 四、文本样式类（行内） ================= -->
+  <div class="box">
+    <h2>四、文本样式</h2>
+    <strong>strong 重要(粗)</strong>
+    <em>em 强调(斜)</em>
+    <b>b 纯粗体</b>
+    <i>i 纯斜体</i>
+    <u>u 下划线</u>
+    <s>s 删除线(无效)</s>
+    <del>del 已删除</del>
+    <ins>ins 已新增</ins>
+  </div>
+
+  <!-- ================= 五、列表类 ================= -->
+  <div class="box">
+    <h2>五、列表</h2>
+    <ul><li>ul 无序项1</li><li>无序项2</li></ul>
+    <ol><li>ol 有序项1</li><li>有序项2</li></ol>
+    <dl>
+      <dt>dl 定义列表的术语</dt>
+      <dd>dd 对应的解释</dd>
+    </dl>
+  </div>
+
+  <!-- ================= 六、链接与媒体类 ================= -->
+  <div class="box">
+    <h2>六、链接与媒体</h2>
+    <a href="https://example.com">a 超链接</a><br>
+    <img src="img.png" alt="图片" width="80"><br>
+    <picture>
+      <source srcset="big.png" media="(min-width:600px)">
+      <img src="small.png" alt="响应式图片">
+    </picture><br>
+    <video src="v.mp4" controls width="120"></video><br>
+    <audio src="a.mp3" controls></audio><br>
+    <iframe src="https://example.com" width="150" height="80"></iframe><br>
+    <canvas width="80" height="40" style="border:1px solid #000;"></canvas><br>
+    <svg width="40" height="40"><circle cx="20" cy="20" r="18" fill="red"/></svg><br>
+    <!-- map + area 图片热点 -->
+    <img src="map.png" alt="热点图" width="100" usemap="#m">
+    <map name="m"><area shape="rect" coords="0,0,50,50" href="#" alt="区域1"></map>
+  </div>
+
+  <!-- ================= 七、表格类 ================= -->
+  <div class="box">
+    <h2>七、表格</h2>
+    <table border="1" cellpadding="4">
+      <caption>caption 表格标题</caption>
+      <colgroup><col style="background:#eee"><col></colgroup>
+      <thead><tr><th>表头1</th><th>表头2</th></tr></thead>
+      <tbody><tr><td>单元格</td><td>单元格</td></tr></tbody>
+      <tfoot><tr><td colspan="2">tfoot 表尾合计</td></tr></tfoot>
+    </table>
+  </div>
+
+  <!-- ================= 八、表单类 ================= -->
+  <div class="box">
+    <h2>八、表单</h2>
+    <form action="/x" method="post">
+      <fieldset>
+        <legend>fieldset 分组 + legend 标题</legend>
+        <label for="u">label 标签：</label>
+        <input id="u" type="text" placeholder="输入框"><br>
+        <textarea placeholder="多行文本"></textarea><br>
+        <button type="submit">button 提交</button><br>
+        <select>
+          <optgroup label="分组">
+            <option>option 下拉项</option>
+          </optgroup>
+        </select><br>
+        <input list="browsers" placeholder="datalist 候选">
+        <datalist id="browsers"><option value="Chrome"><option value="Edge"></datalist><br>
+        <output>output 计算结果</output><br>
+        <progress value="60" max="100">progress 进度条</progress><br>
+        <meter value="0.6">meter 度量</meter>
+      </fieldset>
+    </form>
+  </div>
+
+</body>
+</html>
