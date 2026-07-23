@@ -1,3 +1,4 @@
+// HTML代码注释
 <template>
   <div class="page">
     <h2>用户列表</h2>
@@ -19,6 +20,7 @@
   </div>
 </template>
 
+// JS代码注释
 <script>
 import { getUsers } from '@/api/user'
 
@@ -40,7 +42,7 @@ export default {
   }
 }
 </script>
-
+// 加上这个scoped后这个Css代码就只对这个文件内的HTML代码有效
 <style scoped>
 .page { padding: 24px; }
 table { width: 100%; border-collapse: collapse; background: #fff; }
